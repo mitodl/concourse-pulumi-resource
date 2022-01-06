@@ -5,8 +5,7 @@ CMD ["/bin/sh"]
 
 ARG PULUMI_VERSION=3.21.0
 
-RUN set -x && \
-    apk add --no-cache --update curl && \
+RUN apk add --no-cache --update curl && \
     curl -fsSL https://get.pulumi.com | sh -s -- --version ${PULUMI_VERSION} && \
     pip install --no-cache-dir pulumi~=${PULUMI_VERSION}
 

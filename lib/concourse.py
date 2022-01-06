@@ -1,3 +1,4 @@
+"""the concourse functions and methods for the three primary commands, and their interfacing with the pulumi automation api bindings interface"""
 import sys
 import os
 import json
@@ -6,6 +7,7 @@ import lib.pulumi
 
 
 def check_cmd():
+    """concourse check command"""
     # assign input parameters
     params = __read_params()
 
@@ -21,7 +23,8 @@ def check_cmd():
 
 
 def in_cmd():
-    #TODO: it looks like this should be a dummy, but should it really?
+    """concourse in command"""
+    # TODO: it looks like this should be a dummy, but should it really?
     payload = {
         'version': 'placeholder',
         'metadata': '',
@@ -30,6 +33,7 @@ def in_cmd():
 
 
 def out_cmd():
+    """concourse out command"""
     # assign input parameters
     params = __read_params()
     # determine current working dir
@@ -38,8 +42,9 @@ def out_cmd():
     lib.pulumi.create_update_stack(
         stack_name=params['stack_name'],
         project_name=params['project_name'],
-        #TODO: use new path lib thing for python
-        source_dir=os.path.join(working_dir, params['source_dir'])
+        # TODO: use new path lib thing for python
+        source_dir=os.path.join(working_dir, params['source_dir']),
+        cloud_config=params['cloud_config']
     )
     # dump out json payload
     # TODO: use pulumi outputs for this

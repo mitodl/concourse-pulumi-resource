@@ -1,3 +1,4 @@
+"""the pulumi CRUD+L interface"""
 from pulumi import automation
 
 
@@ -10,8 +11,7 @@ def list_stack(project_name: str, runtime: str):
         stacks = workspace.list_stacks()
         return [stack.name for stack in stacks]
     except Exception as exception:
-        print(str(exception))
-        return []
+        raise Exception(str(exception)) from exception
 
 
 def read_stack(stack_name: str, project_name: str, output_key: str):
@@ -24,11 +24,10 @@ def read_stack(stack_name: str, project_name: str, output_key: str):
                                         program=lambda *args: None)
         outputs = stack.outputs()
         return outputs[output_key].value
-    except automation.StackNotFoundError:
-        return print(f"stack '{stack_name}' does not exist")
+    except automation.StackNotFoundError as exception:
+        raise automation.StackNotFoundError(f"stack '{stack_name}' does not exist") from exception
     except Exception as exception:
-        print(str(exception))
-        return '0'
+        raise Exception(str(exception)) from exception
 
 
 def create_update_stack(stack_name: str, project_name: str, source_dir: str, cloud_config: dict):
@@ -39,17 +38,17 @@ def create_update_stack(stack_name: str, project_name: str, source_dir: str, clo
         stack = automation.create_or_select_stack(stack_name=stack_name,
                                                   project_name=project_name,
                                                   work_dir=source_dir)
-        #TODO: support other cloud
+        # TODO: support other cloud
         stack.set_config("aws:region", automation.ConfigValue(cloud_config['region']))
         # refresh the stack
         stack.refresh(on_output=print)
         # deploy the stack and output logs to stdout
         stack.up(on_output=print)
         return print(f"stack '{stack_name}' successfully created!")
-    except automation.ConcurrentUpdateError:
-        return print(f"stack '{stack_name}' already has update in progress")
+    except automation.ConcurrentUpdateError as exception:
+        raise automation.ConcurrentUpdateError(f"stack '{stack_name}' already has update in progress") from exception
     except Exception as exception:
-        return print(str(exception))
+        raise Exception(str(exception)) from exception
 
 
 def destroy_stack(stack_name: str, project_name: str):
@@ -66,9 +65,9 @@ def destroy_stack(stack_name: str, project_name: str):
         stack.destroy(on_output=print)
         stack.workspace.remove_stack(stack_name)
         return print(f"stack '{stack_name}' successfully removed!")
-    except automation.StackNotFoundError:
-        return print(f"stack '{stack_name}' does not exist")
-    except automation.ConcurrentUpdateError:
-        return print(f"stack '{stack_name}' already has update in progress")
+    except automation.StackNotFoundError as exception:
+        raise automation.StackNotFoundError(f"stack '{stack_name}' does not exist") from exception
+    except automation.ConcurrentUpdateError as exception:
+        raise automation.ConcurrentUpdateError(f"stack '{stack_name}' already has update in progress") from exception
     except Exception as exception:
-        return print(str(exception))
+        raise Exception(str(exception)) from exception

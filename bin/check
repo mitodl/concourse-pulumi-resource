@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""concourse check executable"""
 
 import lib.concourse
 
