@@ -2,19 +2,20 @@
 from pulumi import automation
 
 
-def list_stack(project_name: str, runtime: str):
+def list_stack(project_name: str, runtime: str) -> list:
     """returns list of stacks for given workspace in project and runtime"""
     try:
         # select the workspace
         workspace = automation.LocalWorkspace(project_settings=automation.ProjectSettings(name=project_name, runtime=runtime))
         # list the stacks in the workspace
         stacks = workspace.list_stacks()
+
         return [stack.name for stack in stacks]
     except Exception as exception:
         raise Exception(str(exception)) from exception
 
 
-def read_stack(stack_name: str, project_name: str, output_key: str):
+def read_stack(stack_name: str, project_name: str, output_key: str = None):
     """reads output value from a specified stack"""
     try:
         # select the stack
@@ -23,14 +24,18 @@ def read_stack(stack_name: str, project_name: str, output_key: str):
                                         # no-op program, just to get outputs
                                         program=lambda *args: None)
         outputs = stack.outputs()
-        return outputs[output_key].value
+
+        # return single value from outputs, or return all outputs
+        if output_key:
+            return outputs[output_key].value
+        return outputs
     except automation.StackNotFoundError as exception:
         raise automation.StackNotFoundError(f"stack '{stack_name}' does not exist") from exception
     except Exception as exception:
         raise Exception(str(exception)) from exception
 
 
-def create_update_stack(stack_name: str, project_name: str, source_dir: str, cloud_config: dict):
+def create_update_stack(stack_name: str, project_name: str, source_dir: str, cloud_config: dict, refresh_stack: bool = False) -> None:
     """creates or updates a stack"""
 
     try:
@@ -41,9 +46,11 @@ def create_update_stack(stack_name: str, project_name: str, source_dir: str, clo
         # TODO: support other cloud
         stack.set_config("aws:region", automation.ConfigValue(cloud_config['region']))
         # refresh the stack
-        stack.refresh(on_output=print)
+        if refresh_stack:
+            stack.refresh(on_output=print)
         # deploy the stack and output logs to stdout
         stack.up(on_output=print)
+
         return print(f"stack '{stack_name}' successfully created!")
     except automation.ConcurrentUpdateError as exception:
         raise automation.ConcurrentUpdateError(f"stack '{stack_name}' already has update in progress") from exception
@@ -51,7 +58,7 @@ def create_update_stack(stack_name: str, project_name: str, source_dir: str, clo
         raise Exception(str(exception)) from exception
 
 
-def destroy_stack(stack_name: str, project_name: str):
+def destroy_stack(stack_name: str, project_name: str, refresh_stack: bool = False) -> None:
     """destroys a stack"""
     try:
         # select the stack
@@ -60,10 +67,12 @@ def destroy_stack(stack_name: str, project_name: str):
                                         # noop program for destroy
                                         program=lambda *args: None)
         # refresh the stack
-        stack.refresh(on_output=print)
+        if refresh_stack:
+            stack.refresh(on_output=print)
         # destroy the stack and output logs to stdout
         stack.destroy(on_output=print)
         stack.workspace.remove_stack(stack_name)
+
         return print(f"stack '{stack_name}' successfully removed!")
     except automation.StackNotFoundError as exception:
         raise automation.StackNotFoundError(f"stack '{stack_name}' does not exist") from exception
