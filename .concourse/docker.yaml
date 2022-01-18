@@ -6,6 +6,10 @@ resources:
   source:
     uri: https://github.com/mitodl/concourse-pulumi-resource
     branch: master
+    paths:
+    - lib
+    - bin
+    - Dockerfile
 
 - name: concourse-pulumi-resource
   type: registry-image
