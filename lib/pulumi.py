@@ -35,14 +35,35 @@ def read_stack(stack_name: str, project_name: str, output_key: str = None):
         raise Exception(str(exception)) from exception
 
 
-def create_update_stack(stack_name: str, project_name: str, source_dir: str, stack_config: dict, refresh_stack: bool = True) -> None:
+def create_stack(stack_name: str, project_name: str, source_dir: str, stack_config: dict) -> None:
+    """creates a stack"""
+
+    try:
+        # create the stack if it does not exist
+        stack = automation.create_stack(stack_name=stack_name,
+                                        project_name=project_name,
+                                        work_dir=source_dir)
+        # add config kv pairs
+        for config_key, config_value in stack_config.items():
+            stack.set_config(config_key, automation.ConfigValue(config_value))
+        # deploy the stack and output logs to stdout
+        stack.up(on_output=print)
+
+        return print(f"stack '{stack_name}' successfully created!")
+    except automation.StackAlreadyExistsError as exception:
+        raise automation.StackAlreadyExistsError(f"stack '{stack_name}' already exists") from exception
+    except Exception as exception:
+        raise Exception(str(exception)) from exception
+
+
+def update_stack(stack_name: str, project_name: str, source_dir: str, stack_config: dict, refresh_stack: bool = True) -> None:
     """creates or updates a stack"""
 
     try:
-        # select the stack or create if does not exist
-        stack = automation.create_or_select_stack(stack_name=stack_name,
-                                                  project_name=project_name,
-                                                  work_dir=source_dir)
+        # updates the stack if not already updating
+        stack = automation.select_stack(stack_name=stack_name,
+                                        project_name=project_name,
+                                        work_dir=source_dir)
         # add config kv pairs
         for config_key, config_value in stack_config.items():
             stack.set_config(config_key, automation.ConfigValue(config_value))
@@ -52,7 +73,7 @@ def create_update_stack(stack_name: str, project_name: str, source_dir: str, sta
         # deploy the stack and output logs to stdout
         stack.up(on_output=print)
 
-        return print(f"stack '{stack_name}' successfully created!")
+        return print(f"stack '{stack_name}' successfully updated!")
     except automation.ConcurrentUpdateError as exception:
         raise automation.ConcurrentUpdateError(f"stack '{stack_name}' already has update in progress") from exception
     except Exception as exception:
@@ -65,7 +86,7 @@ def destroy_stack(stack_name: str, project_name: str, refresh_stack: bool = Fals
         # select the stack
         stack = automation.select_stack(stack_name=stack_name,
                                         project_name=project_name,
-                                        # noop program for destroy
+                                        # no-op program for destroy
                                         program=lambda *args: None)
         # refresh the stack
         if refresh_stack:
