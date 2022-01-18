@@ -35,7 +35,7 @@ def read_stack(stack_name: str, project_name: str, output_key: str = None):
         raise Exception(str(exception)) from exception
 
 
-def create_update_stack(stack_name: str, project_name: str, source_dir: str, cloud_config: dict, refresh_stack: bool = False) -> None:
+def create_update_stack(stack_name: str, project_name: str, source_dir: str, stack_config: dict, refresh_stack: bool = True) -> None:
     """creates or updates a stack"""
 
     try:
@@ -43,8 +43,9 @@ def create_update_stack(stack_name: str, project_name: str, source_dir: str, clo
         stack = automation.create_or_select_stack(stack_name=stack_name,
                                                   project_name=project_name,
                                                   work_dir=source_dir)
-        # TODO: support other cloud
-        stack.set_config("aws:region", automation.ConfigValue(cloud_config['region']))
+        # add config kv pairs
+        for config_key, config_value in stack_config.items():
+            stack.set_config(config_key, automation.ConfigValue(config_value))
         # refresh the stack
         if refresh_stack:
             stack.refresh(on_output=print)

@@ -32,6 +32,5 @@ Creates, updates, or destroys a Pulumi stack.
 - **stack_name**: Pulumi stack name
 - **project_name**: Pulumi project name
 - **source_dir**: source directory containing the target Pulumi files
-- **cloud_config**: contains cloud configuration information
-  - **aws_region**: AWS region in which to create or update the Pulumi stack
+- **stack_config**: hash/dictionary that contains stack configuration key-value pairs
 - **refresh_stack**: boolean to determine whether to refresh the Pulumi stack prior to action

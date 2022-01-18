@@ -50,15 +50,18 @@ def out_cmd() -> str:
     # determine current working dir
     working_dir: str = sys.argv[1]
     # establish optional variables' default values
-    source_dir: str = pathlib.Path(working_dir).joinpath(params.get('source_dir', '.'))
-    refresh_stack: bool = params.get('refresh_stack', False)
+    refresh_stack: bool = params.get('refresh_stack', True)
     # create or update pulumi stack
     if params['action'] == 'create' or params['action'] == 'update':
+        # more defaults for these actions
+        source_dir: str = pathlib.Path(working_dir).joinpath(params.get('source_dir', '.'))
+        stack_config: dict = params.get('stack_config', {})
+
         lib.pulumi.create_update_stack(
             stack_name=params['stack_name'],
             project_name=params['project_name'],
             source_dir=source_dir,
-            cloud_config=params['cloud_config'],
+            stack_config=stack_config,
             refresh_stack=refresh_stack
         )
     elif params['action'] == 'destroy':
