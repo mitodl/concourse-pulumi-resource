@@ -6,7 +6,7 @@ import json
 import lib.pulumi
 
 
-def check_cmd():
+def check_cmd() -> str:
     """concourse check command"""
     # assign input parameters
     params = __read_params()
@@ -22,7 +22,7 @@ def check_cmd():
     json.dump({'version': version}, sys.stdout)
 
 
-def in_cmd():
+def in_cmd() -> str:
     """concourse in command"""
     # assign input parameters
     params = __read_params()
@@ -43,26 +43,29 @@ def in_cmd():
     json.dump(payload, sys.stdout)
 
 
-def out_cmd():
+def out_cmd() -> str:
     """concourse out command"""
     # assign input parameters
-    params = __read_params()
+    params: dict = __read_params()
     # determine current working dir
-    working_dir = sys.argv[1]
+    working_dir: str = sys.argv[1]
+    # establish optional variables' default values
+    source_dir: str = pathlib.Path(working_dir).joinpath(params.get('source_dir', '.'))
+    refresh_stack: bool = params.get('refresh_stack', False)
     # create or update pulumi stack
     if params['action'] == 'create' or params['action'] == 'update':
         lib.pulumi.create_update_stack(
             stack_name=params['stack_name'],
             project_name=params['project_name'],
-            source_dir=pathlib.Path(working_dir).joinpath(params['source_dir']),
+            source_dir=source_dir,
             cloud_config=params['cloud_config'],
-            refresh_stack=params['refresh_stack']
+            refresh_stack=refresh_stack
         )
     elif params['action'] == 'destroy':
         lib.pulumi.destroy_stack(
             stack_name=params['stack_name'],
             project_name=params['project_name'],
-            refresh_stack=params['refresh_stack']
+            refresh_stack=refresh_stack
         )
     else:
         raise RuntimeError('Invalid value for "action" parameter')
@@ -75,6 +78,6 @@ def out_cmd():
     json.dump(payload, sys.stdout)
 
 
-def __read_params(stream=sys.stdin):
+def __read_params(stream=sys.stdin) -> dict:
     inputs = json.load(stream)
     return inputs['params']
