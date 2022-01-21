@@ -10,11 +10,14 @@ def check_cmd() -> str:
     """concourse check command"""
     # assign input parameters
     params = __read_params()
+    # establish optional variables' default values
+    source_dir: str = __pulumi_source_dir(params.get('source_dir', '.'))
 
     # read version value from stack
     version = lib.pulumi.read_stack(
         stack_name=params['stack_name'],
         project_name=params['project_name'],
+        source_dir=source_dir,
         output_key='version'
     )
 
@@ -26,11 +29,20 @@ def in_cmd() -> str:
     """concourse in command"""
     # assign input parameters
     params = __read_params()
+    # establish optional variables' default values
+    source_dir: str = __pulumi_source_dir(params.get('source_dir', '.'))
     # read all outputs from stack
     outputs = lib.pulumi.read_stack(
         stack_name=params['stack_name'],
-        project_name=params['project_name']
+        project_name=params['project_name'],
+        source_dir=source_dir
     )
+
+    # write json formatted outputs to file for later possible use by out
+    outputs_path = str(pathlib.Path(source_dir).joinpath('outputs.json'))
+    with open(outputs_path, 'w') as json_file:
+        # output dictionary as json to file
+        json_file.write(json.dumps(outputs, indent=2))
 
     # create payload with stack version and stack outputs metadata
     payload = {
@@ -39,7 +51,7 @@ def in_cmd() -> str:
             params['stack_name']: outputs
         },
     }
-    # TODO: dump to resource file
+
     return json.dump(payload, sys.stdout)
 
 
@@ -47,15 +59,14 @@ def out_cmd() -> str:
     """concourse out command"""
     # assign input parameters
     params: dict = __read_params()
-    # determine current working dir
-    working_dir: str = sys.argv[1]
     # establish optional variables' default values
     refresh_stack: bool = params.get('refresh_stack', True)
     preview: bool = params.get('preview', False)
-    source_dir: str = pathlib.Path(working_dir).joinpath(params.get('source_dir', '.'))
+    source_dir: str = __pulumi_source_dir(params.get('source_dir', '.'))
     stack_config: dict = params.get('stack_config', {})
     # initialize outputs
     outputs: dict = {'version': ''}
+
     # create pulumi stack
     if params['action'] == 'create':
         outputs = lib.pulumi.create_stack(
@@ -89,5 +100,11 @@ def out_cmd() -> str:
 
 
 def __read_params(stream=sys.stdin) -> dict:
+    """reads in concourse params and returns efficient params lookup dict"""
     inputs = json.load(stream)
     return inputs['params']
+
+
+def __pulumi_source_dir(param_source_dir: str):
+    """determines path to pulumi source dir and returns as str for automation api input"""
+    return str(pathlib.Path(sys.argv[1]).joinpath(param_source_dir))

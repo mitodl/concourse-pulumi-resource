@@ -15,14 +15,18 @@ def list_stack(project_name: str, runtime: str) -> list:
         raise Exception(str(exception)) from exception
 
 
-def read_stack(stack_name: str, project_name: str, output_key: str = None):
+def read_stack(
+    stack_name: str,
+    project_name: str,
+    source_dir: str,
+    output_key: str = None
+):
     """returns output value or values from a specified stack"""
     try:
         # select the stack
         stack = automation.select_stack(stack_name=stack_name,
                                         project_name=project_name,
-                                        # no-op program, just to get outputs
-                                        program=lambda *args: None)
+                                        work_dir=source_dir)
         outputs = stack.outputs()
 
         # return single value from outputs, or return all outputs
