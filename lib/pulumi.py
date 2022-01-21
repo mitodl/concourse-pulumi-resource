@@ -35,7 +35,7 @@ def read_stack(stack_name: str, project_name: str, output_key: str = None):
         raise Exception(str(exception)) from exception
 
 
-def create_stack(stack_name: str, project_name: str, source_dir: str, stack_config: dict) -> dict:
+def create_stack(stack_name: str, project_name: str, source_dir: str, stack_config: dict, preview: bool = False) -> dict:
     """creates a stack and returns its output values"""
 
     try:
@@ -46,9 +46,14 @@ def create_stack(stack_name: str, project_name: str, source_dir: str, stack_conf
         # add config kv pairs
         for config_key, config_value in stack_config.items():
             stack.set_config(config_key, automation.ConfigValue(config_value))
-        # deploy the stack and output logs to stdout
-        stack.up(on_output=print)
-        print(f"stack '{stack_name}' successfully created!")
+        if preview:
+            # preview instead and output to stdout
+            print(f"stack '{stack_name}' preview below:")
+            stack.preview(on_output=print)
+        else:
+            # deploy the stack and output logs to stdout
+            stack.up(on_output=print)
+            print(f"stack '{stack_name}' successfully created!")
 
         # return stack outputs
         return stack.outputs()
@@ -58,7 +63,7 @@ def create_stack(stack_name: str, project_name: str, source_dir: str, stack_conf
         raise Exception(str(exception)) from exception
 
 
-def update_stack(stack_name: str, project_name: str, source_dir: str, stack_config: dict, refresh_stack: bool = True) -> dict:
+def update_stack(stack_name: str, project_name: str, source_dir: str, stack_config: dict, refresh_stack: bool = True, preview: bool = False) -> dict:
     """updates a stack and returns its output values"""
 
     try:
@@ -72,9 +77,14 @@ def update_stack(stack_name: str, project_name: str, source_dir: str, stack_conf
         # refresh the stack
         if refresh_stack:
             stack.refresh(on_output=print)
-        # deploy the stack and output logs to stdout
-        stack.up(on_output=print)
-        print(f"stack '{stack_name}' successfully updated!")
+        if preview:
+            # preview instead and output to stdout
+            print(f"stack '{stack_name}' preview below:")
+            stack.preview(on_output=print)
+        else:
+            # deploy the stack and output logs to stdout
+            stack.up(on_output=print)
+            print(f"stack '{stack_name}' successfully updated!")
 
         # return stack outputs
         return stack.outputs()

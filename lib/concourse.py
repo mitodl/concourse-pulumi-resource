@@ -51,6 +51,7 @@ def out_cmd() -> str:
     working_dir: str = sys.argv[1]
     # establish optional variables' default values
     refresh_stack: bool = params.get('refresh_stack', True)
+    preview: bool = params.get('preview', False)
     source_dir: str = pathlib.Path(working_dir).joinpath(params.get('source_dir', '.'))
     stack_config: dict = params.get('stack_config', {})
     # initialize outputs
@@ -61,7 +62,8 @@ def out_cmd() -> str:
             stack_name=params['stack_name'],
             project_name=params['project_name'],
             source_dir=source_dir,
-            stack_config=stack_config
+            stack_config=stack_config,
+            preview=preview
         )
     # update pulumi stack
     elif params['action'] == 'update':
@@ -70,7 +72,8 @@ def out_cmd() -> str:
             project_name=params['project_name'],
             source_dir=source_dir,
             stack_config=stack_config,
-            refresh_stack=refresh_stack
+            refresh_stack=refresh_stack,
+            preview=preview
         )
     # destroy pulumi stack
     elif params['action'] == 'destroy':
