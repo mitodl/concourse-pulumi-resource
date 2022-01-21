@@ -35,7 +35,13 @@ def read_stack(stack_name: str, project_name: str, output_key: str = None):
         raise Exception(str(exception)) from exception
 
 
-def create_stack(stack_name: str, project_name: str, source_dir: str, stack_config: dict, preview: bool = False) -> dict:
+def create_stack(
+    stack_name: str,
+    project_name: str,
+    source_dir: str,
+    stack_config: dict,
+    preview: bool = False
+) -> dict:
     """creates a stack and returns its output values"""
 
     try:
@@ -63,7 +69,14 @@ def create_stack(stack_name: str, project_name: str, source_dir: str, stack_conf
         raise Exception(str(exception)) from exception
 
 
-def update_stack(stack_name: str, project_name: str, source_dir: str, stack_config: dict, refresh_stack: bool = True, preview: bool = False) -> dict:
+def update_stack(
+    stack_name: str,
+    project_name: str,
+    source_dir: str,
+    stack_config: dict,
+    refresh_stack: bool = True,
+    preview: bool = False
+) -> dict:
     """updates a stack and returns its output values"""
 
     try:
@@ -95,7 +108,7 @@ def update_stack(stack_name: str, project_name: str, source_dir: str, stack_conf
 
 
 def destroy_stack(stack_name: str, project_name: str, refresh_stack: bool = False) -> None:
-    """destroys a stack"""
+    """destroys and removes a stack"""
     try:
         # select the stack
         stack = automation.select_stack(stack_name=stack_name,
@@ -109,7 +122,7 @@ def destroy_stack(stack_name: str, project_name: str, refresh_stack: bool = Fals
         stack.destroy(on_output=print)
         stack.workspace.remove_stack(stack_name)
 
-        return print(f"stack '{stack_name}' successfully removed!")
+        return print(f"stack '{stack_name}' successfully destroyed and  removed!")
     except automation.StackNotFoundError as exception:
         raise automation.StackNotFoundError(f"stack '{stack_name}' does not exist") from exception
     except automation.ConcurrentUpdateError as exception:

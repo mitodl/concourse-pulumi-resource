@@ -19,7 +19,7 @@ def check_cmd() -> str:
     )
 
     # dump out json payload
-    json.dump({'version': version}, sys.stdout)
+    return json.dump({'version': version}, sys.stdout)
 
 
 def in_cmd() -> str:
@@ -40,7 +40,7 @@ def in_cmd() -> str:
         },
     }
     # TODO: dump to resource file
-    json.dump(payload, sys.stdout)
+    return json.dump(payload, sys.stdout)
 
 
 def out_cmd() -> str:
@@ -55,13 +55,13 @@ def out_cmd() -> str:
     source_dir: str = pathlib.Path(working_dir).joinpath(params.get('source_dir', '.'))
     stack_config: dict = params.get('stack_config', {})
     # initialize outputs
-    outputs: dict = {}
+    outputs: dict = {'version': ''}
     # create pulumi stack
     if params['action'] == 'create':
         outputs = lib.pulumi.create_stack(
             stack_name=params['stack_name'],
             project_name=params['project_name'],
-            source_dir=source_dir,
+            source_dir=str(source_dir),
             stack_config=stack_config,
             preview=preview
         )
@@ -70,14 +70,14 @@ def out_cmd() -> str:
         outputs = lib.pulumi.update_stack(
             stack_name=params['stack_name'],
             project_name=params['project_name'],
-            source_dir=source_dir,
+            source_dir=str(source_dir),
             stack_config=stack_config,
             refresh_stack=refresh_stack,
             preview=preview
         )
     # destroy pulumi stack
     elif params['action'] == 'destroy':
-        outputs = lib.pulumi.destroy_stack(
+        lib.pulumi.destroy_stack(
             stack_name=params['stack_name'],
             project_name=params['project_name'],
             refresh_stack=refresh_stack
@@ -85,11 +85,7 @@ def out_cmd() -> str:
     else:
         raise RuntimeError('Invalid value for "action" parameter')
     # dump out json payload
-    payload = {
-        'version': outputs['version'].value,
-        'metadata': '',
-    }
-    json.dump(payload, sys.stdout)
+    return json.dump({'version': outputs['version'].value}, sys.stdout)
 
 
 def __read_params(stream=sys.stdin) -> dict:
