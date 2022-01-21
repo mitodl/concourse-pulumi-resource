@@ -9,12 +9,12 @@ import lib.pulumi
 def check_cmd() -> str:
     """concourse check command"""
     # assign input parameters
-    params = __read_params()
+    params: dict = __read_params()
     # establish optional variables' default values
     source_dir: str = __pulumi_source_dir(params.get('source_dir', '.'))
 
     # read version value from stack
-    version = lib.pulumi.read_stack(
+    version: str = lib.pulumi.read_stack(
         stack_name=params['stack_name'],
         project_name=params['project_name'],
         source_dir=source_dir,
@@ -28,24 +28,24 @@ def check_cmd() -> str:
 def in_cmd() -> str:
     """concourse in command"""
     # assign input parameters
-    params = __read_params()
+    params: dict = __read_params()
     # establish optional variables' default values
     source_dir: str = __pulumi_source_dir(params.get('source_dir', '.'))
     # read all outputs from stack
-    outputs = lib.pulumi.read_stack(
+    outputs: dict = lib.pulumi.read_stack(
         stack_name=params['stack_name'],
         project_name=params['project_name'],
         source_dir=source_dir
     )
 
     # write json formatted outputs to file for later possible use by out
-    outputs_path = str(pathlib.Path(source_dir).joinpath('outputs.json'))
-    with open(outputs_path, 'w') as json_file:
+    outputs_path: str = str(pathlib.Path(source_dir).joinpath(f"{params['stack_name']}_outputs.json"))
+    with open(outputs_path, 'w', encoding='utf8') as json_file:
         # output dictionary as json to file
         json_file.write(json.dumps(outputs, indent=2))
 
     # create payload with stack version and stack outputs metadata
-    payload = {
+    payload: dict = {
         'version': outputs['version'].value,
         'metadata': {
             params['stack_name']: outputs
@@ -69,7 +69,7 @@ def out_cmd() -> str:
 
     # create pulumi stack
     if params['action'] == 'create':
-        outputs = lib.pulumi.create_stack(
+        outputs: dict = lib.pulumi.create_stack(
             stack_name=params['stack_name'],
             project_name=params['project_name'],
             source_dir=str(source_dir),
@@ -78,7 +78,7 @@ def out_cmd() -> str:
         )
     # update pulumi stack
     elif params['action'] == 'update':
-        outputs = lib.pulumi.update_stack(
+        outputs: dict = lib.pulumi.update_stack(
             stack_name=params['stack_name'],
             project_name=params['project_name'],
             source_dir=str(source_dir),
@@ -101,7 +101,7 @@ def out_cmd() -> str:
 
 def __read_params(stream=sys.stdin) -> dict:
     """reads in concourse params and returns efficient params lookup dict"""
-    inputs = json.load(stream)
+    inputs: dict = json.load(stream)
     return inputs['params']
 
 

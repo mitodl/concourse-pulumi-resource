@@ -16,7 +16,7 @@ Checks the version of the Pulumi stack.
 
 ### in
 
-Writes a JSON-formatted file to the resource with the Pulumi stack outputs.
+Writes a JSON-formatted file to the resource with the Pulumi stack outputs. This file is located at `<concourse working dir>/<pulumi source dir>/<pulumi stack name>_outputs.json`.
 
 #### parameters
 

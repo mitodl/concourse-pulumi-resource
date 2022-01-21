@@ -8,7 +8,7 @@ def list_stack(project_name: str, runtime: str) -> list:
         # select the workspace
         workspace = automation.LocalWorkspace(project_settings=automation.ProjectSettings(name=project_name, runtime=runtime))
         # list the stacks in the workspace
-        stacks = workspace.list_stacks()
+        stacks: list = workspace.list_stacks()
 
         return [stack.name for stack in stacks]
     except Exception as exception:
@@ -27,7 +27,7 @@ def read_stack(
         stack = automation.select_stack(stack_name=stack_name,
                                         project_name=project_name,
                                         work_dir=source_dir)
-        outputs = stack.outputs()
+        outputs: dict = stack.outputs()
 
         # return single value from outputs, or return all outputs
         if output_key:
