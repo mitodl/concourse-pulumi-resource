@@ -19,6 +19,14 @@ resources:
     repository: mitodl/concourse-pulumi-resource
     username: ((dockerhub.username))
     password: ((dockerhub.password))
+- name: concourse-pulumi-resource-provisioner
+  type: registry-image
+  icon: docker
+  source:
+    tag: latest
+    repository: mitodl/concourse-pulumi-resource-provisioner
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
 
 jobs:
 - name: build-and-publish-image
@@ -43,6 +51,27 @@ jobs:
       params:
         CONTEXT: pulumi-resource
   - put: concourse-pulumi-resource
+    params:
+      image: image/image.tar
+      additional_tags: pulumi-resource/.git/ref
+  - task: build-image-provisioner
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: vito/oci-build-task
+      inputs:
+      - name: pulumi-resource
+      outputs:
+      - name: image
+      run:
+        path: build
+      params:
+        CONTEXT: pulumi-resource
+        DOCKERFILE: pulumi-resource/Dockerfile.mitol_provision
+  - put: concourse-pulumi-resource-provisioner
     params:
       image: image/image.tar
       additional_tags: pulumi-resource/.git/ref
