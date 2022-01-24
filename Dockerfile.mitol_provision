@@ -1,16 +1,5 @@
-FROM mitodl/ol-infrastructure
+FROM mitodl/concourse-pulumi-resource
 ENV PYTHONUNBUFFERED=1
-WORKDIR /opt/resource
 CMD ["/bin/sh"]
 
-ARG PULUMI_VERSION=3.21.1
-
-RUN apt-get update && apt-get install -y --no-install-recommends curl && \
-    curl -fsSL https://get.pulumi.com | sh -s -- --version ${PULUMI_VERSION} && \
-    mv /root/.pulumi/bin/pulumi /usr/bin/pulumi && \
-    pip install --no-cache-dir pulumi~=${PULUMI_VERSION} && \
-    apt-get purge curl && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY bin/* /opt/resource/
-COPY lib/* /opt/resource/lib/
+RUN pip install --no-cache-dir boto3 httpx hvac hvac["parser"] parliament pulumi-aws pulumi-fastly pulumi-github pulumi-tls pulumi-vault pulumi_consul pydantic pulumi-mongodbatlas bcrypt
