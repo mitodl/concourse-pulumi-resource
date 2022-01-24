@@ -10,6 +10,7 @@ resources:
     - lib
     - bin
     - Dockerfile
+    - Dockerfile.mitol_provision
 
 - name: concourse-pulumi-resource
   type: registry-image
