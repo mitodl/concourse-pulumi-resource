@@ -6,7 +6,7 @@ import sys
 import lib.pulumi
 
 
-def check_cmd() -> str:
+def check_cmd() -> None:
     """concourse check command"""
     # assign input parameters
     params: dict = __read_params()
@@ -22,10 +22,10 @@ def check_cmd() -> str:
     )
 
     # dump out json payload
-    return json.dump({"version": version}, sys.stdout)
+    json.dump({"version": version}, sys.stdout)
 
 
-def in_cmd() -> str:
+def in_cmd() -> None:
     """concourse in command"""
     # assign input parameters
     params: dict = __read_params()
@@ -52,10 +52,10 @@ def in_cmd() -> str:
         "metadata": {params["stack_name"]: outputs},
     }
 
-    return json.dump(payload, sys.stdout)
+    json.dump(payload, sys.stdout)
 
 
-def out_cmd() -> str:
+def out_cmd() -> None:
     """concourse out command"""
     # assign input parameters
     params: dict = __read_params()
@@ -69,7 +69,7 @@ def out_cmd() -> str:
 
     # create pulumi stack
     if params["action"] == "create":
-        outputs: dict = lib.pulumi.create_stack(
+        outputs = lib.pulumi.create_stack(
             stack_name=params["stack_name"],
             project_name=params["project_name"],
             source_dir=str(source_dir),
@@ -78,7 +78,7 @@ def out_cmd() -> str:
         )
     # update pulumi stack
     elif params["action"] == "update":
-        outputs: dict = lib.pulumi.update_stack(
+        outputs = lib.pulumi.update_stack(
             stack_name=params["stack_name"],
             project_name=params["project_name"],
             source_dir=str(source_dir),
@@ -96,7 +96,7 @@ def out_cmd() -> str:
     else:
         raise RuntimeError('Invalid value for "action" parameter')
     # dump out json payload
-    return json.dump({"version": outputs["version"].value}, sys.stdout)
+    json.dump({"version": outputs["version"].value}, sys.stdout)
 
 
 def __read_params(stream=sys.stdin) -> dict:
