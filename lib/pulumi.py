@@ -6,7 +6,7 @@ def list_stack(project_name: str, runtime: str) -> list:
     """returns list of stacks for given workspace in project and runtime"""
     try:
         # select the workspace
-        workspace = automation.LocalWorkspace(
+        workspace: automation._local_workspace.LocalWorkspace = automation.LocalWorkspace(
             project_settings=automation.ProjectSettings(
                 name=project_name, runtime=runtime
             )
@@ -29,8 +29,9 @@ def read_stack(
     """returns output value or values from a specified stack"""
     try:
         # select the stack
-        stack = automation.select_stack(
-            stack_name=stack_name, project_name=project_name, work_dir=source_dir
+        stack: automation._stack.Stack = automation.select_stack(
+            stack_name=stack_name, project_name=project_name, work_dir=source_dir,
+            opts=__env_to_workspace(env=env)
         )
         outputs: dict = stack.outputs()
 
@@ -58,8 +59,11 @@ def create_stack(
 
     try:
         # create the stack if it does not exist
-        stack = automation.create_stack(
-            stack_name=stack_name, project_name=project_name, work_dir=source_dir
+        stack: automation._stack.Stack = automation.create_stack(
+            stack_name=stack_name,
+            project_name=project_name,
+            work_dir=source_dir,
+            opts=__env_to_workspace(env=env)
         )
         # add config kv pairs
         for config_key, config_value in stack_config.items():
@@ -96,8 +100,11 @@ def update_stack(
 
     try:
         # updates the stack if not already updating
-        stack = automation.select_stack(
-            stack_name=stack_name, project_name=project_name, work_dir=source_dir
+        stack: automation._stack.Stack = automation.select_stack(
+            stack_name=stack_name,
+            project_name=project_name,
+            work_dir=source_dir,
+            opts=__env_to_workspace(env=env)
         )
         # add config kv pairs
         for config_key, config_value in stack_config.items():
@@ -133,11 +140,12 @@ def destroy_stack(
     """destroys and removes a stack"""
     try:
         # select the stack
-        stack = automation.select_stack(
+        stack: automation._stack.Stack = automation.select_stack(
             stack_name=stack_name,
             project_name=project_name,
             # no-op program for destroy
             program=lambda *args: None,
+            opts=__env_to_workspace(env=env)
         )
         # refresh the stack
         if refresh_stack:
@@ -157,3 +165,8 @@ def destroy_stack(
         ) from exception
     except Exception as exception:
         raise Exception(str(exception)) from exception
+
+
+def __env_to_workspace(env: dict) -> automation._local_workspace.LocalWorkspaceOptions:
+    """converts env dict into workspace options"""
+    return automation.LocalWorkspaceOptions(env_vars=env)
