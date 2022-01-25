@@ -20,7 +20,11 @@ def list_stack(project_name: str, runtime: str) -> list:
 
 
 def read_stack(
-    stack_name: str, project_name: str, source_dir: str, output_key: str = None
+    stack_name: str,
+    project_name: str,
+    source_dir: str,
+    env: dict = None,
+    output_key: str = None
 ):
     """returns output value or values from a specified stack"""
     try:
@@ -47,6 +51,7 @@ def create_stack(
     project_name: str,
     source_dir: str,
     stack_config: dict,
+    env: dict = None,
     preview: bool = False,
 ) -> dict:
     """creates a stack and returns its output values"""
@@ -83,6 +88,7 @@ def update_stack(
     project_name: str,
     source_dir: str,
     stack_config: dict,
+    env: dict = None,
     refresh_stack: bool = True,
     preview: bool = False,
 ) -> dict:
@@ -119,7 +125,10 @@ def update_stack(
 
 
 def destroy_stack(
-    stack_name: str, project_name: str, refresh_stack: bool = False
+    stack_name: str,
+    project_name: str,
+    env: dict = None,
+    refresh_stack: bool = False
 ) -> None:
     """destroys and removes a stack"""
     try:

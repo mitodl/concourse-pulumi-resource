@@ -23,6 +23,7 @@ Writes a JSON-formatted file to the resource with the Pulumi stack outputs. This
 - **stack_name**: Pulumi stack name
 - **project_name**: Pulumi project name
 - **source_dir**: optional source directory containing the target Pulumi files
+- **env**: optional hash/dictionary containing environment variable key-value pairs
 
 ### out
 
@@ -35,5 +36,6 @@ Creates, updates, or destroys a Pulumi stack.
 - **stack_name**: Pulumi stack name
 - **project_name**: Pulumi project name
 - **source_dir**: optional source directory containing the target Pulumi files
-- **stack_config**: hash/dictionary that contains stack configuration key-value pairs
+- **stack_config**: optional hash/dictionary that contains stack configuration key-value pairs
+- **env**: optional hash/dictionary containing environment variable key-value pairs
 - **refresh_stack**: optional boolean to determine whether to refresh the Pulumi stack prior to action (default: `true`)
