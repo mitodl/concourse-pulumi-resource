@@ -4,4 +4,4 @@ FROM mitodl/concourse-pulumi-resource
 ENV PYTHONUNBUFFERED=1
 CMD ["/bin/sh"]
 
-COPY --from=infra /home/app/.venv/ /
+COPY --from=infra /home/app/.venv/ /usr/local/
