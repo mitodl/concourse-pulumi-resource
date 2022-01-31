@@ -39,3 +39,32 @@ Creates, updates, or destroys a Pulumi stack.
 - **stack_config**: optional hash/dictionary that contains stack configuration key-value pairs
 - **env**: optional hash/dictionary containing environment variable key-value pairs
 - **refresh_stack**: optional boolean to determine whether to refresh the Pulumi stack prior to action (default: `true`)
+
+## Example
+
+```yaml
+---
+resource_types:
+- name: pulumi
+  type: docker-image
+  source:
+    repository: mitodl/concourse-pulumi-resource
+    tag: latest
+
+resources:
+- name: pulumi-thing-doer
+  type: pulumi
+
+jobs:
+- name: pulumi-stuff-and-things
+  plan:
+  - get: pulumi_files
+  - put: pulumi-thing-doer
+    params:
+      action: update
+      stack_name: applications.sign_and_verify.QA
+      project_name: ol-infrastructure-sign-and-verify-application
+      source_dir: pulumi_files/src/ol_infrastructure/applications/sign_and_verify
+      env:
+        AWS_REGION: us-east-1
+```
