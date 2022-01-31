@@ -1,4 +1,5 @@
 FROM mitodl/ol-infrastructure as infra
+RUN find /home/app/.venv/ -type l -exec unlink {} \;
 
 FROM mitodl/concourse-pulumi-resource
 ENV PYTHONUNBUFFERED=1
