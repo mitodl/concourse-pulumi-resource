@@ -1,6 +1,7 @@
+FROM mitodl/ol-infrastructure as infra
+
 FROM mitodl/concourse-pulumi-resource
 ENV PYTHONUNBUFFERED=1
 CMD ["/bin/sh"]
 
-RUN apk add --no-cache --update build-base libffi-dev && \
-    pip install --no-cache-dir boto3 httpx hvac hvac["parser"] parliament pulumi-aws pulumi-fastly pulumi-github pulumi-tls pulumi-vault pulumi_consul pydantic pulumi-mongodbatlas bcrypt
+COPY --from=infra /home/app/.venv/ /
