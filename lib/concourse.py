@@ -31,7 +31,7 @@ def in_cmd() -> None:
     params: dict = __read_params()
     # establish optional variables' default values
     source_dir: str = __pulumi_source_dir(params.get("source_dir", "."))
-    env: dict = params.get('env', {})
+    env: dict = params.get("env", {})
     # read all outputs from stack
     outputs: dict = lib.pulumi.read_stack(
         stack_name=params["stack_name"],
@@ -66,7 +66,7 @@ def out_cmd() -> None:
     preview: bool = params.get("preview", False)
     source_dir: str = __pulumi_source_dir(params.get("source_dir", "."))
     stack_config: dict = params.get("stack_config", {})
-    env: dict = params.get('env', {})
+    env: dict = params.get("env", {})
     # initialize outputs
     outputs: dict = {"version": ""}
 
