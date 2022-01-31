@@ -1,13 +1,14 @@
 FROM python:3.9-slim
 ENV PYTHONUNBUFFERED=1
+ENV PATH="${PATH}:/root/.pulumi/bin"
 WORKDIR /opt/resource
 CMD ["/bin/sh"]
 
-ARG PULUMI_VERSION=3.21.1
+ARG PULUMI_VERSION=3.23.2
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     curl -fsSL https://get.pulumi.com | sh -s -- --version ${PULUMI_VERSION} && \
-    mv /root/.pulumi/bin/pulumi /usr/bin/pulumi && \
+    rm -f /root/.pulumi/bin/pulumi-language-dotnet /root/.pulumi/bin/pulumi-language-go /root/.pulumi/bin/pulumi-language-nodejs /root/.pulumi/bin/pulumi-resource-pulumi-nodejs && \
     pip install --no-cache-dir pulumi~=${PULUMI_VERSION} && \
     apt-get purge -y curl && apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
