@@ -31,13 +31,13 @@ def in_cmd() -> None:
     params: dict = __read_params()
     # establish optional variables' default values
     source_dir: str = __pulumi_source_dir(params.get("source_dir", "."))
-    env: dict = params.get('env', {})
+    env_pulumi: dict = params.get('env_pulumi', {})
     # read all outputs from stack
     outputs: dict = lib.pulumi.read_stack(
         stack_name=params["stack_name"],
         project_name=params["project_name"],
         source_dir=source_dir,
-        env=env,
+        env=env_pulumi,
     )
 
     # write json formatted outputs to file for later possible use by out
@@ -66,7 +66,7 @@ def out_cmd() -> None:
     preview: bool = params.get("preview", False)
     source_dir: str = __pulumi_source_dir(params.get("source_dir", "."))
     stack_config: dict = params.get("stack_config", {})
-    env: dict = params.get('env', {})
+    env_pulumi: dict = params.get('env_pulumi', {})
     # initialize outputs
     outputs: dict = {"version": ""}
 
@@ -77,7 +77,7 @@ def out_cmd() -> None:
             project_name=params["project_name"],
             source_dir=str(source_dir),
             stack_config=stack_config,
-            env=env,
+            env=env_pulumi,
             preview=preview,
         )
     # update pulumi stack
@@ -88,7 +88,7 @@ def out_cmd() -> None:
             source_dir=str(source_dir),
             stack_config=stack_config,
             refresh_stack=refresh_stack,
-            env=env,
+            env=env_pulumi,
             preview=preview,
         )
     # destroy pulumi stack
@@ -96,7 +96,7 @@ def out_cmd() -> None:
         lib.pulumi.destroy_stack(
             stack_name=params["stack_name"],
             project_name=params["project_name"],
-            env=env,
+            env=env_pulumi,
             refresh_stack=refresh_stack,
         )
     else:

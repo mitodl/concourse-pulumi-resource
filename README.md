@@ -23,7 +23,7 @@ Writes a JSON-formatted file to the resource with the Pulumi stack outputs. This
 - **stack_name**: Pulumi stack name
 - **project_name**: Pulumi project name
 - **source_dir**: optional source directory containing the target Pulumi files
-- **env**: optional hash/dictionary containing environment variable key-value pairs
+- **env_pulumi**: optional hash/dictionary containing Pulumi environment variable key-value pairs
 
 ### out
 
@@ -37,7 +37,7 @@ Creates, updates, or destroys a Pulumi stack.
 - **project_name**: Pulumi project name
 - **source_dir**: optional source directory containing the target Pulumi files
 - **stack_config**: optional hash/dictionary that contains stack configuration key-value pairs
-- **env**: optional hash/dictionary containing environment variable key-value pairs
+- **env_pulumi**: optional hash/dictionary containing Pulumi environment variable key-value pairs
 - **refresh_stack**: optional boolean to determine whether to refresh the Pulumi stack prior to action (default: `true`)
 
 ## Example
@@ -65,6 +65,6 @@ jobs:
       stack_name: applications.sign_and_verify.QA
       project_name: ol-infrastructure-sign-and-verify-application
       source_dir: pulumi_files/src/ol_infrastructure/applications/sign_and_verify
-      env:
+      env_pulumi:
         AWS_REGION: us-east-1
 ```
