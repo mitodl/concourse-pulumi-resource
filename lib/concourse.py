@@ -1,6 +1,7 @@
 """the concourse functions and methods for the three primary commands, and their interfacing with the pulumi automation api bindings interface"""
 import json
 import pathlib
+import os
 import sys
 
 import lib.pulumi
@@ -12,6 +13,10 @@ def check_cmd() -> None:
     params: dict = __read_params()
     # establish optional variables' default values
     source_dir: str = __pulumi_source_dir(params.get("source_dir", "."))
+
+    # merge in os env variables
+    if 'env_os' in params:
+        os.environ.update(params['env_os'])
 
     # read version value from stack
     version: str = lib.pulumi.read_stack(
@@ -32,6 +37,11 @@ def in_cmd() -> None:
     # establish optional variables' default values
     source_dir: str = __pulumi_source_dir(params.get("source_dir", "."))
     env_pulumi: dict = params.get('env_pulumi', {})
+
+    # merge in os env variables
+    if 'env_os' in params:
+        os.environ.update(params['env_os'])
+
     # read all outputs from stack
     outputs: dict = lib.pulumi.read_stack(
         stack_name=params["stack_name"],
@@ -69,6 +79,10 @@ def out_cmd() -> None:
     env_pulumi: dict = params.get('env_pulumi', {})
     # initialize outputs
     outputs: dict = {"version": ""}
+
+    # merge in os env variables
+    if 'env_os' in params:
+        os.environ.update(params['env_os'])
 
     # create pulumi stack
     if params["action"] == "create":
