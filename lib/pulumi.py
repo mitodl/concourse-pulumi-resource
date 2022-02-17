@@ -4,7 +4,7 @@ import sys
 
 from pulumi import automation
 
-logging.basicConfig(stream=sys.stdout)
+logging.basicConfig(stream=sys.stderr)
 log = logging.getLogger(__name__)
 
 

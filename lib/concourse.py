@@ -7,7 +7,7 @@ import sys
 
 import lib.pulumi
 
-logging.basicConfig(stream=sys.stdout)
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
@@ -83,7 +83,7 @@ def out_cmd() -> None:
     env_pulumi: dict = params.get("env_pulumi", {})
     # initialize outputs
     outputs: dict = {"version": ""}
-
+    log.info("Preparing to execute project.", params)
     # merge in os env variables
     if "env_os" in params:
         os.environ.update(params["env_os"])
@@ -120,7 +120,8 @@ def out_cmd() -> None:
     else:
         raise RuntimeError('Invalid value for "action" parameter')
     # dump out json payload
-    json.dump({"version": outputs}, sys.stdout)
+    log.info("Execution results", outputs)
+    json.dump({"version": "not-a-version"}, sys.stdout)
 
 
 def __read_params(stream=sys.stdin) -> dict:
