@@ -120,8 +120,7 @@ def out_cmd() -> None:
     else:
         raise RuntimeError('Invalid value for "action" parameter')
     # dump out json payload
-    log.info("Stack output", outputs)
-    json.dump({"version": "not-a-version"}, sys.stdout)
+    json.dump({"version": outputs}, sys.stdout)
 
 
 def __read_params(stream=sys.stdin) -> dict:
