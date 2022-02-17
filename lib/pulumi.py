@@ -1,9 +1,10 @@
 """the pulumi CRUD+L interface"""
 import logging
+import sys
 
 from pulumi import automation
 
-logging.basicConfig()
+logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
 
 

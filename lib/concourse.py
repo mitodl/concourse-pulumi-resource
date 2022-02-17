@@ -7,7 +7,7 @@ import sys
 
 import lib.pulumi
 
-logging.basicConfig()
+logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
 
 
