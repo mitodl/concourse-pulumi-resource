@@ -1,5 +1,10 @@
 """the pulumi CRUD+L interface"""
+import logging
+
 from pulumi import automation
+
+logging.basicConfig()
+log = logging.getLogger(__name__)
 
 
 def list_stack(project_name: str, runtime: str) -> list:

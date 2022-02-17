@@ -1,10 +1,14 @@
 """the concourse functions and methods for the three primary commands, and their interfacing with the pulumi automation api bindings interface"""
 import json
+import logging
 import os
 import pathlib
 import sys
 
 import lib.pulumi
+
+logging.basicConfig()
+log = logging.getLogger(__name__)
 
 
 def check_cmd() -> None:
@@ -116,7 +120,8 @@ def out_cmd() -> None:
     else:
         raise RuntimeError('Invalid value for "action" parameter')
     # dump out json payload
-    json.dump({"version": outputs["version"].value}, sys.stdout)
+    log.info("Stack output", outputs)
+    json.dump({"version": "not-a-version"}, sys.stdout)
 
 
 def __read_params(stream=sys.stdin) -> dict:
