@@ -80,12 +80,12 @@ def create_stack(
             stack.set_config(config_key, automation.ConfigValue(config_value))
         if preview:
             # preview instead and output to stdout
-            print(f"stack '{stack_name}' preview below:")
-            stack.preview(on_output=print)
+            log.info(f"stack '{stack_name}' preview below:")
+            stack.preview(on_output=log.info)
         else:
             # deploy the stack and output logs to stdout
-            stack.up(on_output=print)
-            print(f"stack '{stack_name}' successfully created!")
+            stack.up(on_output=log.info)
+            log.info(f"stack '{stack_name}' successfully created!")
 
         # return stack outputs
         return stack.outputs()
@@ -121,15 +121,15 @@ def update_stack(
             stack.set_config(config_key, automation.ConfigValue(config_value))
         # refresh the stack
         if refresh_stack:
-            stack.refresh(on_output=print)
+            stack.refresh(on_output=log.info)
         if preview:
             # preview instead and output to stdout
-            print(f"stack '{stack_name}' preview below:")
-            stack.preview(on_output=print)
+            log.info(f"stack '{stack_name}' preview below:")
+            stack.preview(on_output=log.info)
         else:
             # deploy the stack and output logs to stdout
-            stack.up(on_output=print)
-            print(f"stack '{stack_name}' successfully updated!")
+            stack.up(on_output=log.info)
+            log.info(f"stack '{stack_name}' successfully updated!")
 
         # return stack outputs
         return stack.outputs()
@@ -156,12 +156,12 @@ def destroy_stack(
         )
         # refresh the stack
         if refresh_stack:
-            stack.refresh(on_output=print)
+            stack.refresh(on_output=log.info)
         # destroy the stack and output logs to stdout
-        stack.destroy(on_output=print)
+        stack.destroy(on_output=log.info)
         stack.workspace.remove_stack(stack_name)
 
-        return print(f"stack '{stack_name}' successfully destroyed and  removed!")
+        return f"stack '{stack_name}' successfully destroyed and  removed!"
     except automation.StackNotFoundError as exception:
         raise automation.StackNotFoundError(
             f"stack '{stack_name}' does not exist"
