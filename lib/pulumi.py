@@ -10,21 +10,14 @@ log = logging.getLogger(__name__)
 
 def list_stack(project_name: str, runtime: str) -> list:
     """returns list of stacks for given workspace in project and runtime"""
-    try:
-        # select the workspace
-        workspace: automation._local_workspace.LocalWorkspace = (
-            automation.LocalWorkspace(
-                project_settings=automation.ProjectSettings(
-                    name=project_name, runtime=runtime
-                )
-            )
-        )
-        # list the stacks in the workspace
-        stacks: list = workspace.list_stacks()
+    # select the workspace
+    workspace: automation._local_workspace.LocalWorkspace = automation.LocalWorkspace(
+        project_settings=automation.ProjectSettings(name=project_name, runtime=runtime)
+    )
+    # list the stacks in the workspace
+    stacks: list = workspace.list_stacks()
 
-        return [stack.name for stack in stacks]
-    except Exception as exception:
-        raise Exception(str(exception)) from exception
+    return [stack.name for stack in stacks]
 
 
 def read_stack(
@@ -53,8 +46,6 @@ def read_stack(
         raise automation.StackNotFoundError(
             f"stack '{stack_name}' does not exist"
         ) from exception
-    except Exception as exception:
-        raise Exception(str(exception)) from exception
 
 
 def create_stack(
@@ -93,8 +84,6 @@ def create_stack(
         raise automation.StackAlreadyExistsError(
             f"stack '{stack_name}' already exists"
         ) from exception
-    except Exception as exception:
-        raise Exception(str(exception)) from exception
 
 
 def update_stack(
@@ -132,13 +121,13 @@ def update_stack(
             log.info(f"stack '{stack_name}' successfully updated!")
 
         # return stack outputs
-        return stack.outputs()
+        stack_outputs = stack.outputs()
+        log.info("Stack outputs after update.", stack_outputs)
+        return stack_outputs
     except automation.ConcurrentUpdateError as exception:
         raise automation.ConcurrentUpdateError(
             f"stack '{stack_name}' already has update in progress"
         ) from exception
-    except Exception as exception:
-        raise Exception(str(exception)) from exception
 
 
 def destroy_stack(

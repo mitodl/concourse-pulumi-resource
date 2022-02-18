@@ -127,7 +127,8 @@ def out_cmd() -> None:
 def __read_params(stream=sys.stdin) -> dict:
     """reads in concourse params and returns efficient params lookup dict"""
     inputs: dict = json.load(stream)
-    return inputs["params"]
+    log.info("Concourse input parameters", inputs)
+    return inputs.get("params", {"stack_name": "", "project_name": ""})
 
 
 def __pulumi_source_dir(param_source_dir: str):
