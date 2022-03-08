@@ -1,15 +1,11 @@
 """the concourse functions and methods for the three primary commands, and their interfacing with the pulumi automation api bindings interface"""
 import json
-import logging
 import os
 import pathlib
 import sys
 
 import lib.pulumi
-
-logging.basicConfig(stream=sys.stderr, level=logging.INFO)
-log = logging.getLogger(__name__)
-
+from lib.logrus import logger
 
 def check_cmd() -> None:
     json.dump({"id": 0}, sys.stdout)
@@ -18,22 +14,20 @@ def check_cmd() -> None:
 def in_cmd() -> None:
     # assign input parameters
     params: dict = __read_params()
+    logger.info(json.dumps(params))
     # establish optional variables' default values
-    source_dir: str = __pulumi_source_dir(
-        "/tmp/build/put", params.get("source_dir", ".")
-    )
-    env_pulumi: dict = params.get("env_pulumi", {})
+    source_dir: str = sys.argv[1] + '/' + params.get("source_dir", ".")
 
     # merge in os env variables
     if "env_os" in params:
         os.environ.update(params["env_os"])
 
     # read all outputs from stack
-    outputs: dict = lib.pulumi.read_stack(
+    outputs = lib.pulumi.read_stack(
         stack_name=params["stack_name"],
         project_name=params["project_name"],
         source_dir=source_dir,
-        env=env_pulumi,
+        env=params,
     )
 
     # write json formatted outputs to file for later possible use by out
@@ -45,11 +39,11 @@ def in_cmd() -> None:
         json_file.write(json.dumps(outputs, indent=2))
 
     # create payload with stack version and stack outputs metadata
-    payload: dict = {
-        "version": {"id": 0},
-        "metadata": {params["stack_name"]: outputs},
+    payload = {
+        "version": {
+            'id': '0'
+        }
     }
-
     json.dump(payload, sys.stdout)
 
 
@@ -58,17 +52,15 @@ def out_cmd() -> None:
     params: dict = __read_params()
     refresh_stack: bool = params.get("refresh_stack", True)
     preview: bool = params.get("preview", False)
-    source_dir: str = __pulumi_source_dir(
-        "/tmp/build/put", params.get("source_dir", ".")
-    )
+    source_dir: str = sys.argv[1] + '/' + params.get("source_dir", ".")
     stack_config: dict = params.get("stack_config", {})
     env_pulumi: dict = params.get("env_pulumi", {})
-    outputs: dict = {"version": ""}
+    version: int = 0
     if "env_os" in params:
         os.environ.update(params["env_os"])
 
     if params["action"] == "create":
-        outputs = lib.pulumi.create_stack(
+        version = lib.pulumi.create_stack(
             stack_name=params["stack_name"],
             project_name=params["project_name"],
             source_dir=source_dir,
@@ -77,7 +69,7 @@ def out_cmd() -> None:
             preview=preview,
         )
     elif params["action"] == "update":
-        outputs = lib.pulumi.update_stack(
+        version = lib.pulumi.update_stack(
             stack_name=params["stack_name"],
             project_name=params["project_name"],
             source_dir=source_dir,
@@ -87,7 +79,7 @@ def out_cmd() -> None:
             preview=preview,
         )
     elif params["action"] == "destroy":
-        lib.pulumi.destroy_stack(
+        version = lib.pulumi.destroy_stack(
             stack_name=params["stack_name"],
             project_name=params["project_name"],
             env=env_pulumi,
@@ -95,15 +87,14 @@ def out_cmd() -> None:
         )
     else:
         raise RuntimeError('Invalid value for "action" parameter')
-    json.dump({"version": {"id": 0}}, sys.stdout)
+    json.dump({
+        "version": {
+            'id': str(version)
+        }
+    }, sys.stdout)
 
 
 def __read_params(stream=sys.stdin) -> dict:
     """reads in concourse params and returns efficient params lookup dict"""
     inputs: dict = json.load(stream)
     return inputs.get("params", {"stack_name": "", "project_name": ""})
-
-
-def __pulumi_source_dir(prefix_path: str, param_source_dir: str):
-    """determines path to pulumi source dir and returns as str for automation api input"""
-    return str(pathlib.Path(prefix_path).joinpath(param_source_dir))

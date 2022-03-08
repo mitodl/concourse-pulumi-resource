@@ -3,7 +3,6 @@ RUN find /home/app/.venv/ -type l -exec unlink {} \;
 
 FROM pulumi/pulumi-python:3.25.1
 ENV PYTHONUNBUFFERED=1
-WORKDIR /opt/resource
 
 COPY bin/* /opt/resource/
 COPY lib/* /opt/resource/lib/

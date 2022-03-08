@@ -1,0 +1,45 @@
+resource_types:
+- name: pulumi
+  source:
+    repository: mitodl/concourse-pulumi-resource-provisioner
+    tag: test
+  type: docker-image
+resources:
+- icon: github
+  type: git
+  name: pulumi_files
+  source:
+    branch: main
+    paths:
+    - src/ol_infrastructure/applications/sign_and_verify
+    uri: https://github.com/mitodl/ol-infrastructure
+- name: pulumi-thing-doer
+  type: pulumi
+jobs:
+- name: pulumi-stuff-and-things
+  plan:
+  - get: pulumi_files
+    trigger: true
+  - put: pulumi-thing-doer
+    params:
+      action: update
+      env_os:
+        AWS_DEFAULT_REGION: us-east-1
+        PYTHONPATH: /usr/lib/:/tmp/build/put/pulumi_files/src/
+      env_pulumi:
+        AWS_ACCESS_KEY_ID: XXXXX
+        AWS_REGION: us-east-1
+        AWS_SECRET_ACCESS_KEY: XXXX
+      project_name: ol-infrastructure-sign-and-verify-application
+      stack_name: applications.sign_and_verify.QA
+      source_dir: pulumi_files/src/ol_infrastructure/applications/sign_and_verify
+    get_params:
+      s3_bucket: 's3://mitol-pulumi-state/'
+      project_name: ol-infrastructure-sign-and-verify-application
+      env_pulumi:
+        AWS_ACCESS_KEY_ID: XXXXX
+        AWS_REGION: us-east-1
+        AWS_SECRET_ACCESS_KEY: XXXXXXXX
+      project_name: ol-infrastructure-sign-and-verify-application
+      stack_name: applications.sign_and_verify.QA
+
