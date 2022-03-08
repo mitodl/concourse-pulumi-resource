@@ -7,7 +7,9 @@ from pulumi import automation
 logging.basicConfig(stream=sys.stderr)
 log = logging.getLogger(__name__)
 
-logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+logFormatter = logging.Formatter(
+    "%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s"
+)
 fileHandler = logging.FileHandler("/var/log/pulumi.log")
 fileHandler.setFormatter(logFormatter)
 

@@ -19,7 +19,9 @@ def in_cmd() -> None:
     # assign input parameters
     params: dict = __read_params()
     # establish optional variables' default values
-    source_dir: str = __pulumi_source_dir('/tmp/build/put', params.get("source_dir", "."))
+    source_dir: str = __pulumi_source_dir(
+        "/tmp/build/put", params.get("source_dir", ".")
+    )
     env_pulumi: dict = params.get("env_pulumi", {})
 
     # merge in os env variables
@@ -44,7 +46,7 @@ def in_cmd() -> None:
 
     # create payload with stack version and stack outputs metadata
     payload: dict = {
-        "version": {"id": 0 },
+        "version": {"id": 0},
         "metadata": {params["stack_name"]: outputs},
     }
 
@@ -56,7 +58,9 @@ def out_cmd() -> None:
     params: dict = __read_params()
     refresh_stack: bool = params.get("refresh_stack", True)
     preview: bool = params.get("preview", False)
-    source_dir: str = __pulumi_source_dir('/tmp/build/put', params.get("source_dir", "."))
+    source_dir: str = __pulumi_source_dir(
+        "/tmp/build/put", params.get("source_dir", ".")
+    )
     stack_config: dict = params.get("stack_config", {})
     env_pulumi: dict = params.get("env_pulumi", {})
     outputs: dict = {"version": ""}
@@ -91,11 +95,7 @@ def out_cmd() -> None:
         )
     else:
         raise RuntimeError('Invalid value for "action" parameter')
-    json.dump({
-        "version": {
-            'id': 0
-        }
-    }, sys.stdout)
+    json.dump({"version": {"id": 0}}, sys.stdout)
 
 
 def __read_params(stream=sys.stdin) -> dict:
