@@ -12,34 +12,14 @@ log = logging.getLogger(__name__)
 
 
 def check_cmd() -> None:
-    """concourse check command"""
-    # assign input parameters
-    params: dict = __read_params()
-    # establish optional variables' default values
-    source_dir: str = __pulumi_source_dir(params.get("source_dir", "."))
-
-    # merge in os env variables
-    if "env_os" in params:
-        os.environ.update(params["env_os"])
-
-    # read version value from stack
-    version: str = lib.pulumi.read_stack(
-        stack_name=params["stack_name"],
-        project_name=params["project_name"],
-        source_dir=source_dir,
-        output_key="version",
-    )
-
-    # dump out json payload
-    json.dump({"version": version}, sys.stdout)
+    json.dump({"id": 0}, sys.stdout)
 
 
 def in_cmd() -> None:
-    """concourse in command"""
     # assign input parameters
     params: dict = __read_params()
     # establish optional variables' default values
-    source_dir: str = __pulumi_source_dir(params.get("source_dir", "."))
+    source_dir: str = __pulumi_source_dir('/tmp/build/put', params.get("source_dir", "."))
     env_pulumi: dict = params.get("env_pulumi", {})
 
     # merge in os env variables
@@ -64,7 +44,7 @@ def in_cmd() -> None:
 
     # create payload with stack version and stack outputs metadata
     payload: dict = {
-        "version": outputs["version"].value,
+        "version": {"id": 0 },
         "metadata": {params["stack_name"]: outputs},
     }
 
@@ -73,43 +53,35 @@ def in_cmd() -> None:
 
 def out_cmd() -> None:
     """concourse out command"""
-    # assign input parameters
     params: dict = __read_params()
-    # establish optional variables' default values
     refresh_stack: bool = params.get("refresh_stack", True)
     preview: bool = params.get("preview", False)
-    source_dir: str = __pulumi_source_dir(params.get("source_dir", "."))
+    source_dir: str = __pulumi_source_dir('/tmp/build/put', params.get("source_dir", "."))
     stack_config: dict = params.get("stack_config", {})
     env_pulumi: dict = params.get("env_pulumi", {})
-    # initialize outputs
     outputs: dict = {"version": ""}
-    log.info("Preparing to execute project.", params)
-    # merge in os env variables
     if "env_os" in params:
         os.environ.update(params["env_os"])
 
-    # create pulumi stack
     if params["action"] == "create":
         outputs = lib.pulumi.create_stack(
             stack_name=params["stack_name"],
             project_name=params["project_name"],
-            source_dir=str(source_dir),
+            source_dir=source_dir,
             stack_config=stack_config,
             env=env_pulumi,
             preview=preview,
         )
-    # update pulumi stack
     elif params["action"] == "update":
         outputs = lib.pulumi.update_stack(
             stack_name=params["stack_name"],
             project_name=params["project_name"],
-            source_dir=str(source_dir),
+            source_dir=source_dir,
             stack_config=stack_config,
             refresh_stack=refresh_stack,
             env=env_pulumi,
             preview=preview,
         )
-    # destroy pulumi stack
     elif params["action"] == "destroy":
         lib.pulumi.destroy_stack(
             stack_name=params["stack_name"],
@@ -119,18 +91,19 @@ def out_cmd() -> None:
         )
     else:
         raise RuntimeError('Invalid value for "action" parameter')
-    # dump out json payload
-    log.info("Execution results", outputs)
-    json.dump({"version": "not-a-version"}, sys.stdout)
+    json.dump({
+        "version": {
+            'id': 0
+        }
+    }, sys.stdout)
 
 
 def __read_params(stream=sys.stdin) -> dict:
     """reads in concourse params and returns efficient params lookup dict"""
     inputs: dict = json.load(stream)
-    log.info("Concourse input parameters", inputs)
     return inputs.get("params", {"stack_name": "", "project_name": ""})
 
 
-def __pulumi_source_dir(param_source_dir: str):
+def __pulumi_source_dir(prefix_path: str, param_source_dir: str):
     """determines path to pulumi source dir and returns as str for automation api input"""
-    return str(pathlib.Path(sys.argv[1]).joinpath(param_source_dir))
+    return str(pathlib.Path(prefix_path).joinpath(param_source_dir))

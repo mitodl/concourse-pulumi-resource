@@ -7,6 +7,12 @@ from pulumi import automation
 logging.basicConfig(stream=sys.stderr)
 log = logging.getLogger(__name__)
 
+logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+fileHandler = logging.FileHandler("/var/log/pulumi.log")
+fileHandler.setFormatter(logFormatter)
+
+log.addHandler(fileHandler)
+
 
 def list_stack(project_name: str, runtime: str) -> list:
     """returns list of stacks for given workspace in project and runtime"""
