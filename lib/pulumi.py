@@ -1,20 +1,13 @@
 """the pulumi CRUD+L interface"""
-import json
-import logging
-import sys
-
-from pulumi import automation
 from lib.logrus import logger
-
+from pulumi import automation
 
 
 def list_stack(project_name: str, runtime: str) -> list:
     """returns list of stacks for given workspace in project and runtime"""
-    # select the workspace
     workspace: automation._local_workspace.LocalWorkspace = automation.LocalWorkspace(
         project_settings=automation.ProjectSettings(name=project_name, runtime=runtime)
     )
-    # list the stacks in the workspace
     stacks: list = workspace.list_stacks()
 
     return [stack.name for stack in stacks]
@@ -24,11 +17,12 @@ def read_stack(
     stack_name: str,
     project_name: str,
     source_dir: str,
-    env: dict = None,
+    env: dict,
     output_key: str = None,
 ):
     """returns output value or values from a specified stack"""
     import sys
+
     logger.info(sys.argv[1])
     try:
         stack: automation._stack.Stack = automation.select_stack(
@@ -54,11 +48,12 @@ def create_stack(
     project_name: str,
     source_dir: str,
     stack_config: dict,
-    env: dict = None,
+    env: dict,
     preview: bool = False,
 ) -> int:
     """creates a stack and returns its output values"""
     import sys
+
     logger.info(sys.argv[1])
     try:
         # create the stack if it does not exist
@@ -74,8 +69,8 @@ def create_stack(
         if preview:
             # preview instead and output to stdout
             logger.info(f"stack '{stack_name}' preview below:")
-            preview_result = stack.preview(on_output=logger.info)
-            return ""
+            stack.preview(on_output=logger.info)
+            return 0
         else:
             # deploy the stack and output logs to stdout
             up_result = stack.up(on_output=logger.info)
@@ -98,6 +93,7 @@ def update_stack(
 ) -> int:
     """updates a stack and returns its output values"""
     import sys
+
     logger.info(sys.argv[1])
     try:
         # updates the stack if not already updating
@@ -112,8 +108,7 @@ def update_stack(
             stack.set_config(config_key, automation.ConfigValue(config_value))
         # refresh the stack
         if refresh_stack:
-            refresh_result = stack.refresh(on_output=logger.info)
-            return refresh_result.summary.version
+            stack.refresh(on_output=logger.info)
         if preview:
             # preview instead and output to stdout
             logger.info(f"stack '{stack_name}' preview below:")
@@ -162,34 +157,47 @@ def destroy_stack(
         raise Exception(str(exception)) from exception
 
 
-def __env_to_workspace(env: dict) -> automation._local_workspace.LocalWorkspaceOptions:
+def __env_to_workspace(
+    env: dict = None,
+) -> automation._local_workspace.LocalWorkspaceOptions:
     """converts env dict into workspace options"""
     return automation.LocalWorkspaceOptions(env_vars=env)
+
 
 def __params_env_to_workspace(
     params: dict,
 ) -> automation._local_workspace.LocalWorkspaceOptions:
     try:
-        env_pulumi = params["env_pulumi"]
-        aws_access_key = env_pulumi["AWS_ACCESS_KEY_ID"]
-        aws_region = env_pulumi["AWS_REGION"]
-        aws_secret_access_key = env_pulumi["AWS_SECRET_ACCESS_KEY"]
-        project_name = params["project_name"]
-        s3_bucket = params["s3_bucket"]
+        env_pulumi = params.get("env_pulumi", {})
+        aws_access_key = env_pulumi.get("AWS_ACCESS_KEY_ID", None)
+        aws_region = env_pulumi.get("AWS_REGION", None)
+        aws_secret_access_key = env_pulumi.get("AWS_SECRET_ACCESS_KEY", None)
+        project_name = params.get("project_name", {})
+        s3_bucket = params.get("s3_bucket", "")
     except Exception as e:
         logger.error(e)
         raise e
     else:
-        opts = automation.LocalWorkspaceOptions(
-            env_vars={
-                "AWS_ACCESS_KEY_ID": aws_access_key,
-                "AWS_REGION": aws_region,
-                "AWS_SECRET_ACCESS_KEY": aws_secret_access_key,
-            },
-            project_settings=automation.ProjectSettings(
-                runtime=automation.ProjectRuntimeInfo(name=project_name),
-                name=project_name,
-                backend=automation.ProjectBackend(url=s3_bucket),
-            ),
-        )
+        opts = automation.LocalWorkspaceOptions()
+        if aws_access_key and aws_region and aws_secret_access_key:
+            opts = automation.LocalWorkspaceOptions(
+                env_vars={
+                    "AWS_ACCESS_KEY_ID": aws_access_key,
+                    "AWS_REGION": aws_region,
+                    "AWS_SECRET_ACCESS_KEY": aws_secret_access_key,
+                },
+                project_settings=automation.ProjectSettings(
+                    runtime=automation.ProjectRuntimeInfo(name=project_name),
+                    name=project_name,
+                    backend=automation.ProjectBackend(url=s3_bucket),
+                ),
+            )
+        else:
+            opts = automation.LocalWorkspaceOptions(
+                project_settings=automation.ProjectSettings(
+                    runtime=automation.ProjectRuntimeInfo(name=project_name),
+                    name=project_name,
+                    backend=automation.ProjectBackend(url=s3_bucket),
+                ),
+            )
     return opts

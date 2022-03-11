@@ -3,12 +3,14 @@ import json
 import os
 import pathlib
 import sys
+from typing import Any, Dict
 
 import lib.pulumi
 from lib.logrus import logger
 
+
 def check_cmd() -> None:
-    json.dump({"id": 0}, sys.stdout)
+    json.dump([{"id": "0"}], sys.stdout)
 
 
 def in_cmd() -> None:
@@ -16,7 +18,7 @@ def in_cmd() -> None:
     params: dict = __read_params()
     logger.info(json.dumps(params))
     # establish optional variables' default values
-    source_dir: str = sys.argv[1] + '/' + params.get("source_dir", ".")
+    source_dir: str = sys.argv[1] + "/" + params.get("source_dir", ".")
 
     # merge in os env variables
     if "env_os" in params:
@@ -39,11 +41,7 @@ def in_cmd() -> None:
         json_file.write(json.dumps(outputs, indent=2))
 
     # create payload with stack version and stack outputs metadata
-    payload = {
-        "version": {
-            'id': '0'
-        }
-    }
+    payload = {"version": {"id": "0"}}
     json.dump(payload, sys.stdout)
 
 
@@ -52,7 +50,7 @@ def out_cmd() -> None:
     params: dict = __read_params()
     refresh_stack: bool = params.get("refresh_stack", True)
     preview: bool = params.get("preview", False)
-    source_dir: str = sys.argv[1] + '/' + params.get("source_dir", ".")
+    source_dir: str = sys.argv[1] + "/" + params.get("source_dir", ".")
     stack_config: dict = params.get("stack_config", {})
     env_pulumi: dict = params.get("env_pulumi", {})
     version: int = 0
@@ -87,11 +85,7 @@ def out_cmd() -> None:
         )
     else:
         raise RuntimeError('Invalid value for "action" parameter')
-    json.dump({
-        "version": {
-            'id': str(version)
-        }
-    }, sys.stdout)
+    json.dump({"version": {"id": str(version)}}, sys.stdout)
 
 
 def __read_params(stream=sys.stdin) -> dict:
