@@ -1,8 +1,11 @@
 FROM mitodl/ol-infrastructure as infra
 RUN find /home/app/.venv/ -type l -exec unlink {} \;
 
-FROM mitodl/concourse-pulumi-resource
+FROM pulumi/pulumi-python:3.25.1
 ENV PYTHONUNBUFFERED=1
-CMD ["/bin/sh"]
 
+COPY bin/* /opt/resource/
+COPY lib/* /opt/resource/lib/
 COPY --from=infra /home/app/.venv/ /usr/local/
+
+CMD ["/bin/sh"]

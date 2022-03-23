@@ -3,13 +3,19 @@ jobs:
 - name: pulumi-stuff-and-things
   plan:
   - get: pulumi_files
-    params:
-      depth: 1
     trigger: true
-  - params:
+  - get_params:
+      env_os:
+        AWS_DEFAULT_REGION: us-east-1
+        PYTHONPATH: /usr/lib/:/tmp/build/put/pulumi_files/src/
+      project_name: ol-infrastructure-sign-and-verify-application
+      s3_bucket: s3://mitol-pulumi-state/
+      stack_name: applications.sign_and_verify.QA
+    params:
       action: update
-      env:
-        AWS_REGION: us-east-1
+      env_os:
+        AWS_DEFAULT_REGION: us-east-1
+        PYTHONPATH: /usr/lib/:/tmp/build/put/pulumi_files/src/
       project_name: ol-infrastructure-sign-and-verify-application
       source_dir: pulumi_files/src/ol_infrastructure/applications/sign_and_verify
       stack_name: applications.sign_and_verify.QA
@@ -18,7 +24,6 @@ resource_types:
 - name: pulumi
   source:
     repository: mitodl/concourse-pulumi-resource-provisioner
-    tag: latest
   type: docker-image
 resources:
 - icon: github
@@ -30,4 +35,5 @@ resources:
     uri: https://github.com/mitodl/ol-infrastructure
   type: git
 - name: pulumi-thing-doer
+  source:
   type: pulumi
