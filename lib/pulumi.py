@@ -1,6 +1,7 @@
 """the pulumi CRUD+L interface"""
-from lib.logrus import logger
 from pulumi import automation
+
+from lib.logrus import logger
 
 
 def list_stack(project_name: str, runtime: str) -> list:

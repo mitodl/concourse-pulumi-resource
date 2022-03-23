@@ -3,7 +3,6 @@ import json
 import os
 import pathlib
 import sys
-from typing import Any, Dict
 
 import lib.pulumi
 from lib.logrus import logger

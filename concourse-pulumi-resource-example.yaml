@@ -1,3 +1,4 @@
+---
 jobs:
 - name: pulumi-stuff-and-things
   plan:
@@ -34,5 +35,5 @@ resources:
     uri: https://github.com/mitodl/ol-infrastructure
   type: git
 - name: pulumi-thing-doer
-  source: null
+  source:
   type: pulumi
