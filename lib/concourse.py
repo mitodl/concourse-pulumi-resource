@@ -5,7 +5,6 @@ import pathlib
 import sys
 
 import lib.pulumi
-from lib.logrus import logger
 
 
 def check_cmd() -> None:

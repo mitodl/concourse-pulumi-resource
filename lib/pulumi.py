@@ -1,5 +1,6 @@
 """the pulumi CRUD+L interface"""
 import sys
+
 from pulumi import automation
 
 from lib.logrus import logger
@@ -162,8 +163,10 @@ def __env_to_workspace(
     env: dict = None,
 ) -> automation._local_workspace.LocalWorkspaceOptions:
     """converts env dict into workspace options"""
-    aws_shared_credentials_file = sys.argv[1] + '/' + env.get("AWS_SHARED_CREDENTIALS_FILE", None)
-    env['AWS_SHARED_CREDENTIALS_FILE'] = aws_shared_credentials_file
+    aws_shared_credentials_file = (
+        sys.argv[1] + "/" + env.get("AWS_SHARED_CREDENTIALS_FILE", None)
+    )
+    env["AWS_SHARED_CREDENTIALS_FILE"] = aws_shared_credentials_file
     return automation.LocalWorkspaceOptions(env_vars=env)
 
 
@@ -174,7 +177,9 @@ def __params_env_to_workspace(
         env_pulumi = params.get("env_pulumi", {})
         env_os = params.get("env_os", {})
         aws_region = env_os.get("AWS_DEFAULT_REGION", None)
-        aws_shared_credentials_file = sys.argv[1] + '/' + env_pulumi.get("AWS_SHARED_CREDENTIALS_FILE", None)
+        aws_shared_credentials_file = (
+            sys.argv[1] + "/" + env_pulumi.get("AWS_SHARED_CREDENTIALS_FILE", None)
+        )
         project_name = params.get("project_name", {})
         s3_bucket = params.get("s3_bucket", "")
     except Exception as e:
