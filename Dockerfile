@@ -1,5 +1,4 @@
-ARG PULUMI_VERSION=3.23.2
-FROM pulumi/pulumi-python:${PULUMI_VERSION}
+FROM pulumi/pulumi-python:3.27.0
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /opt/resource
