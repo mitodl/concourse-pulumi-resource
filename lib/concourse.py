@@ -5,7 +5,6 @@ import pathlib
 import sys
 
 import lib.pulumi
-from lib.logrus import logger
 
 
 def check_cmd() -> None:
@@ -15,8 +14,11 @@ def check_cmd() -> None:
 def in_cmd() -> None:
     # assign input parameters
     params: dict = __read_params()
-    logger.info(json.dumps(params))
     # establish optional variables' default values
+    if params.get("skip_implicit_get", False):
+        payload = {"version": {"id": "0"}}
+        json.dump(payload, sys.stdout)
+        return
     source_dir: str = sys.argv[1] + "/" + params.get("source_dir", ".")
 
     # merge in os env variables
@@ -87,7 +89,7 @@ def out_cmd() -> None:
     json.dump({"version": {"id": str(version)}}, sys.stdout)
 
 
-def __read_params(stream=sys.stdin) -> dict:
+def __read_params(stream=sys.stdin, key="params") -> dict:
     """reads in concourse params and returns efficient params lookup dict"""
     inputs: dict = json.load(stream)
-    return inputs.get("params", {"stack_name": "", "project_name": ""})
+    return inputs.get(key, {"stack_name": "", "project_name": ""})

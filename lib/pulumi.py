@@ -1,4 +1,6 @@
 """the pulumi CRUD+L interface"""
+import sys
+
 from pulumi import automation
 
 from lib.logrus import logger
@@ -53,7 +55,6 @@ def create_stack(
     preview: bool = False,
 ) -> int:
     """creates a stack and returns its output values"""
-    import sys
 
     logger.info(sys.argv[1])
     try:
@@ -162,6 +163,10 @@ def __env_to_workspace(
     env: dict = None,
 ) -> automation._local_workspace.LocalWorkspaceOptions:
     """converts env dict into workspace options"""
+    aws_shared_credentials_file = (
+        sys.argv[1] + "/" + env.get("AWS_SHARED_CREDENTIALS_FILE", None)
+    )
+    env["AWS_SHARED_CREDENTIALS_FILE"] = aws_shared_credentials_file
     return automation.LocalWorkspaceOptions(env_vars=env)
 
 
@@ -170,35 +175,27 @@ def __params_env_to_workspace(
 ) -> automation._local_workspace.LocalWorkspaceOptions:
     try:
         env_pulumi = params.get("env_pulumi", {})
-        aws_access_key = env_pulumi.get("AWS_ACCESS_KEY_ID", None)
-        aws_region = env_pulumi.get("AWS_REGION", None)
-        aws_secret_access_key = env_pulumi.get("AWS_SECRET_ACCESS_KEY", None)
+        env_os = params.get("env_os", {})
+        aws_region = env_os.get("AWS_DEFAULT_REGION", None)
+        aws_shared_credentials_file = (
+            sys.argv[1] + "/" + env_pulumi.get("AWS_SHARED_CREDENTIALS_FILE", None)
+        )
         project_name = params.get("project_name", {})
         s3_bucket = params.get("s3_bucket", "")
     except Exception as e:
         logger.error(e)
         raise e
     else:
-        opts = automation.LocalWorkspaceOptions()
-        if aws_access_key and aws_region and aws_secret_access_key:
-            opts = automation.LocalWorkspaceOptions(
-                env_vars={
-                    "AWS_ACCESS_KEY_ID": aws_access_key,
-                    "AWS_REGION": aws_region,
-                    "AWS_SECRET_ACCESS_KEY": aws_secret_access_key,
-                },
-                project_settings=automation.ProjectSettings(
-                    runtime=automation.ProjectRuntimeInfo(name=project_name),
-                    name=project_name,
-                    backend=automation.ProjectBackend(url=s3_bucket),
-                ),
-            )
-        else:
-            opts = automation.LocalWorkspaceOptions(
-                project_settings=automation.ProjectSettings(
-                    runtime=automation.ProjectRuntimeInfo(name=project_name),
-                    name=project_name,
-                    backend=automation.ProjectBackend(url=s3_bucket),
-                ),
-            )
+        opts = automation.LocalWorkspaceOptions(
+            env_vars={
+                "AWS_REGION": aws_region,
+                "AWS_SHARED_CREDENTIALS_FILE": aws_shared_credentials_file,
+            },
+            project_settings=automation.ProjectSettings(
+                runtime=automation.ProjectRuntimeInfo(name=project_name),
+                name=project_name,
+                backend=automation.ProjectBackend(url=s3_bucket),
+            ),
+        )
+
     return opts
