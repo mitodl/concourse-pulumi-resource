@@ -1,5 +1,7 @@
 """the pulumi CRUD+L interface"""
 import sys
+from pathlib import Path
+from typing import Union
 
 from pulumi import automation
 
@@ -8,7 +10,7 @@ from lib.logrus import logger
 
 def list_stack(project_name: str, runtime: str) -> list:
     """returns list of stacks for given workspace in project and runtime"""
-    workspace: automation._local_workspace.LocalWorkspace = automation.LocalWorkspace(
+    workspace: automation.LocalWorkspace = automation.LocalWorkspace(
         project_settings=automation.ProjectSettings(name=project_name, runtime=runtime)
     )
     stacks: list = workspace.list_stacks()
@@ -19,7 +21,7 @@ def list_stack(project_name: str, runtime: str) -> list:
 def read_stack(
     stack_name: str,
     project_name: str,
-    source_dir: str,
+    source_dir: Union[str, Path],
     env: dict,
     output_key: str = None,
 ):
@@ -28,7 +30,7 @@ def read_stack(
 
     logger.info(sys.argv[1])
     try:
-        stack: automation._stack.Stack = automation.select_stack(
+        stack: automation.Stack = automation.select_stack(
             stack_name=stack_name,
             project_name=project_name,
             work_dir=source_dir,
@@ -49,7 +51,7 @@ def read_stack(
 def create_stack(
     stack_name: str,
     project_name: str,
-    source_dir: str,
+    source_dir: Union[str, Path],
     stack_config: dict,
     env: dict,
     preview: bool = False,
@@ -59,7 +61,7 @@ def create_stack(
     logger.info(sys.argv[1])
     try:
         # create the stack if it does not exist
-        stack: automation._stack.Stack = automation.create_stack(
+        stack: automation.Stack = automation.create_stack(
             stack_name=stack_name,
             project_name=project_name,
             work_dir=source_dir,
@@ -87,7 +89,7 @@ def create_stack(
 def update_stack(
     stack_name: str,
     project_name: str,
-    source_dir: str,
+    source_dir: Union[str, Path],
     stack_config: dict,
     env: dict = None,
     refresh_stack: bool = True,
@@ -99,7 +101,7 @@ def update_stack(
     logger.info(sys.argv[1])
     try:
         # updates the stack if not already updating
-        stack: automation._stack.Stack = automation.select_stack(
+        stack: automation.Stack = automation.select_stack(
             stack_name=stack_name,
             project_name=project_name,
             work_dir=source_dir,
@@ -133,7 +135,7 @@ def destroy_stack(
     """destroys and removes a stack"""
     try:
         # select the stack
-        stack: automation._stack.Stack = automation.select_stack(
+        stack: automation.Stack = automation.select_stack(
             stack_name=stack_name,
             project_name=project_name,
             # no-op program for destroy
@@ -161,10 +163,11 @@ def destroy_stack(
 
 def __env_to_workspace(
     env: dict = None,
-) -> automation._local_workspace.LocalWorkspaceOptions:
+) -> automation.LocalWorkspaceOptions:
     """converts env dict into workspace options"""
-    aws_shared_credentials_file = (
-        sys.argv[1] + "/" + env.get("AWS_SHARED_CREDENTIALS_FILE", None)
+    env = env or {}
+    aws_shared_credentials_file = Path(sys.argv[1]).joinpath(
+        (env).get("AWS_SHARED_CREDENTIALS_FILE", None)
     )
     env["AWS_SHARED_CREDENTIALS_FILE"] = aws_shared_credentials_file
     return automation.LocalWorkspaceOptions(env_vars=env)
@@ -172,13 +175,13 @@ def __env_to_workspace(
 
 def __params_env_to_workspace(
     params: dict,
-) -> automation._local_workspace.LocalWorkspaceOptions:
+) -> automation.LocalWorkspaceOptions:
     try:
         env_pulumi = params.get("env_pulumi", {})
         env_os = params.get("env_os", {})
         aws_region = env_os.get("AWS_DEFAULT_REGION", None)
-        aws_shared_credentials_file = (
-            sys.argv[1] + "/" + env_pulumi.get("AWS_SHARED_CREDENTIALS_FILE", None)
+        aws_shared_credentials_file = Path(sys.argv[1]).joinpath(
+            env_pulumi.get("AWS_SHARED_CREDENTIALS_FILE", None)
         )
         project_name = params.get("project_name", {})
         s3_bucket = params.get("s3_bucket", "")
