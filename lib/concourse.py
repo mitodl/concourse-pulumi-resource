@@ -95,7 +95,7 @@ def __configure_resource(stream=sys.stdin) -> dict:
     """reads in concourse params and returns efficient params lookup dict"""
     inputs: dict = json.load(stream)
     resource_config = {"stack_name": "", "project_name": ""}
-    source = inputs.get("source", {})
-    resource_params = inputs.get("params", {})
+    source = inputs.get("source") or {}
+    resource_params = inputs.get("params") or {}
     resource_config.update(**source, **resource_params)
     return resource_config
