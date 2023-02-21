@@ -1,4 +1,4 @@
-"""the concourse functions and methods for the three primary commands, and their interfacing with the pulumi automation api bindings interface"""
+"""the concourse functions and methods for the three primary commands, and their interfacing with the pulumi automation api bindings interface"""  # noqa: E501
 import json
 import os
 import sys
@@ -47,7 +47,7 @@ def in_cmd() -> None:
 
 
 def out_cmd() -> None:
-    """concourse out command"""
+    """concourse out command"""  # noqa: D403
     resource_config: dict = __configure_resource()
     refresh_stack: bool = resource_config.get("refresh_stack", True)
     preview: bool = resource_config.get("preview", False)
@@ -92,7 +92,7 @@ def out_cmd() -> None:
 
 
 def __configure_resource(stream=sys.stdin) -> dict:
-    """reads in concourse params and returns efficient params lookup dict"""
+    """reads in concourse params and returns efficient params lookup dict"""  # noqa: D401, D403, E501
     inputs: dict = json.load(stream)
     resource_config = {"stack_name": "", "project_name": ""}
     source = inputs.get("source") or {}

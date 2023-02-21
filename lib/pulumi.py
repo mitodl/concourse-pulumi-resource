@@ -1,7 +1,7 @@
 """the pulumi CRUD+L interface"""
 import sys
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 from pulumi import automation
 
@@ -9,7 +9,7 @@ from lib.logrus import logger
 
 
 def list_stack(project_name: str, runtime: str) -> list:
-    """returns list of stacks for given workspace in project and runtime"""
+    """returns list of stacks for given workspace in project and runtime"""  # noqa: D401, D403, E501
     workspace: automation.LocalWorkspace = automation.LocalWorkspace(
         project_settings=automation.ProjectSettings(name=project_name, runtime=runtime)
     )
@@ -23,9 +23,9 @@ def read_stack(
     project_name: str,
     source_dir: Union[str, Path],
     env: dict,
-    output_key: str = None,
+    output_key: Optional[str] = None,
 ):
-    """returns output value or values from a specified stack"""
+    """returns output value or values from a specified stack"""  # noqa: D403, D401
     import sys
 
     logger.info(sys.argv[1])
@@ -48,7 +48,7 @@ def read_stack(
         ) from exception
 
 
-def create_stack(
+def create_stack(  # noqa: PLR0913
     stack_name: str,
     project_name: str,
     source_dir: Union[str, Path],
@@ -56,7 +56,7 @@ def create_stack(
     env: dict,
     preview: bool = False,
 ) -> int:
-    """creates a stack and returns its output values"""
+    """creates a stack and returns its output values"""  # noqa: D403, D401
 
     logger.info(sys.argv[1])
     try:
@@ -72,13 +72,13 @@ def create_stack(
             stack.set_config(config_key, automation.ConfigValue(config_value))
         if preview:
             # preview instead and output to stdout
-            logger.info(f"stack '{stack_name}' preview below:")
+            logger.info(f"stack '{stack_name}' preview below:")  # noqa: G004
             stack.preview(on_output=logger.info)
             return 0
         else:
             # deploy the stack and output logs to stdout
             up_result = stack.up(on_output=logger.info)
-            logger.info(f"stack '{stack_name}' successfully created!")
+            logger.info(f"stack '{stack_name}' successfully created!")  # noqa: G004
             return up_result.summary.version
     except automation.StackAlreadyExistsError as exception:
         raise automation.StackAlreadyExistsError(
@@ -86,16 +86,16 @@ def create_stack(
         ) from exception
 
 
-def update_stack(
+def update_stack(  # noqa: PLR0913
     stack_name: str,
     project_name: str,
     source_dir: Union[str, Path],
     stack_config: dict,
-    env: dict = None,
+    env: Optional[dict] = None,
     refresh_stack: bool = True,
     preview: bool = False,
 ) -> int:
-    """updates a stack and returns its output values"""
+    """updates a stack and returns its output values"""  # noqa: D403, D401
     import sys
 
     logger.info(sys.argv[1])
@@ -115,13 +115,13 @@ def update_stack(
             stack.refresh(on_output=logger.info)
         if preview:
             # preview instead and output to stdout
-            logger.info(f"stack '{stack_name}' preview below:")
+            logger.info(f"stack '{stack_name}' preview below:")  # noqa: G004
             stack.preview(on_output=logger.info)
             return 0
         else:
             # deploy the stack and output logs to stdout
             up_result = stack.up(on_output=logger.info)
-            logger.info(f"stack '{stack_name}' successfully updated!")
+            logger.info(f"stack '{stack_name}' successfully updated!")  # noqa: G004
             return up_result.summary.version
     except automation.ConcurrentUpdateError as exception:
         raise automation.ConcurrentUpdateError(
@@ -130,9 +130,12 @@ def update_stack(
 
 
 def destroy_stack(
-    stack_name: str, project_name: str, env: dict = None, refresh_stack: bool = False
+    stack_name: str,
+    project_name: str,
+    env: Optional[dict] = None,
+    refresh_stack: bool = False,
 ) -> int:
-    """destroys and removes a stack"""
+    """destroys and removes a stack"""  # noqa: D403
     try:
         # select the stack
         stack: automation.Stack = automation.select_stack(
@@ -162,9 +165,9 @@ def destroy_stack(
 
 
 def __env_to_workspace(
-    env: dict = None,
+    env: Optional[dict] = None,
 ) -> automation.LocalWorkspaceOptions:
-    """converts env dict into workspace options"""
+    """converts env dict into workspace options"""  # noqa: D403, D401
     env = env or {}
     aws_shared_credentials_file = Path(sys.argv[1]).joinpath(
         (env).get("AWS_SHARED_CREDENTIALS_FILE", None)
