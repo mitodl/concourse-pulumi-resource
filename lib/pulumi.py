@@ -72,13 +72,13 @@ def create_stack(  # noqa: PLR0913
             stack.set_config(config_key, automation.ConfigValue(config_value))
         if preview:
             # preview instead and output to stdout
-            logger.info(f"stack '{stack_name}' preview below:")  # noqa: G004
+            logger.info(f"stack '{stack_name}' preview below:")
             stack.preview(on_output=logger.info)
             return 0
         else:
             # deploy the stack and output logs to stdout
             up_result = stack.up(on_output=logger.info)
-            logger.info(f"stack '{stack_name}' successfully created!")  # noqa: G004
+            logger.info(f"stack '{stack_name}' successfully created!")
             return up_result.summary.version
     except automation.StackAlreadyExistsError as exception:
         raise automation.StackAlreadyExistsError(
@@ -115,13 +115,13 @@ def update_stack(  # noqa: PLR0913
             stack.refresh(on_output=logger.info)
         if preview:
             # preview instead and output to stdout
-            logger.info(f"stack '{stack_name}' preview below:")  # noqa: G004
+            logger.info(f"stack '{stack_name}' preview below:")
             stack.preview(on_output=logger.info)
             return 0
         else:
             # deploy the stack and output logs to stdout
             up_result = stack.up(on_output=logger.info)
-            logger.info(f"stack '{stack_name}' successfully updated!")  # noqa: G004
+            logger.info(f"stack '{stack_name}' successfully updated!")
             return up_result.summary.version
     except automation.ConcurrentUpdateError as exception:
         raise automation.ConcurrentUpdateError(
