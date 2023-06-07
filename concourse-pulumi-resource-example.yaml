@@ -46,8 +46,7 @@ jobs:
           repository: amazon/aws-cli
           tag: 'latest'
       params:
-        AWS_ROLE: 
-          arn:aws:iam::610119931565:role/ol-applications/concourse/role/concourse-instance-role-worker-infra-qa-4c8b313
+        AWS_ROLE: arn:aws:iam::610119931565:role/ol-applications/concourse/role/concourse-instance-role-worker-infra-qa-4c8b313
       outputs:
       - name: aws_creds
       run:
