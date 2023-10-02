@@ -170,14 +170,14 @@ protobuf = ["grpcio-tools (>=1.56.2)"]
 
 [[package]]
 name = "identify"
-version = "2.5.29"
+version = "2.5.30"
 description = "File identification library for Python"
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "identify-2.5.29-py2.py3-none-any.whl", hash = "sha256:24437fbf6f4d3fe6efd0eb9d67e24dd9106db99af5ceb27996a5f7895f24bf1b"},
-    {file = "identify-2.5.29.tar.gz", hash = "sha256:d43d52b86b15918c137e3a74fff5224f60385cd0e9c38e99d07c257f02f151a5"},
+    {file = "identify-2.5.30-py2.py3-none-any.whl", hash = "sha256:afe67f26ae29bab007ec21b03d4114f41316ab9dd15aa8736a167481e108da54"},
+    {file = "identify-2.5.30.tar.gz", hash = "sha256:f302a4256a15c849b91cfcdcec052a8ce914634b2f77ae87dad29cd749f2d88d"},
 ]
 
 [package.extras]
@@ -347,13 +347,13 @@ files = [
 
 [[package]]
 name = "pulumi"
-version = "3.85.0"
+version = "3.86.0"
 description = "Pulumi's Python SDK"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pulumi-3.85.0-py3-none-any.whl", hash = "sha256:d78556534cc3c19c43157a6a3798203baabcd790c46f72cc99ecf3c1b5166ffc"},
+    {file = "pulumi-3.86.0-py3-none-any.whl", hash = "sha256:db1923170e91badf7d781426d14132a3bec6be827a75d1c535d8be987dc579e1"},
 ]
 
 [package.dependencies]
