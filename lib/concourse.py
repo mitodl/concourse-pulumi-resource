@@ -92,7 +92,7 @@ def out_cmd() -> None:
 
 
 def __configure_resource(stream=sys.stdin) -> dict:
-    """reads in concourse params and returns efficient params lookup dict"""  # noqa: D401, D403, E501
+    """reads in concourse params and returns efficient params lookup dict"""  # noqa: D401, D403
     inputs: dict = json.load(stream)
     resource_config = {"stack_name": "", "project_name": ""}
     source = inputs.get("source") or {}

@@ -9,7 +9,7 @@ from lib.logrus import logger
 
 
 def list_stack(project_name: str, runtime: str) -> list:
-    """returns list of stacks for given workspace in project and runtime"""  # noqa: D401, D403, E501
+    """returns list of stacks for given workspace in project and runtime"""  # noqa: D401, D403
     workspace: automation.LocalWorkspace = automation.LocalWorkspace(
         project_settings=automation.ProjectSettings(name=project_name, runtime=runtime)
     )
