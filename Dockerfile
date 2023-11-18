@@ -1,4 +1,4 @@
-FROM pulumi/pulumi-python:3.93.0
+FROM pulumi/pulumi-python:3.94.2
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /opt/resource
