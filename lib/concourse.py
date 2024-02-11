@@ -1,4 +1,5 @@
 """the concourse functions and methods for the three primary commands, and their interfacing with the pulumi automation api bindings interface"""  # noqa: E501
+
 import json
 import os
 import sys
