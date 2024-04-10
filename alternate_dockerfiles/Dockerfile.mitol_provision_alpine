@@ -1,4 +1,4 @@
-FROM mitodl/concourse-pulumi-resource
+FROM mitodl/concourse-pulumi-resource@sha256:7f069fcae99d44ea9c53e9a722d81359d572e3b05d48e6876c9e1428e421f78d
 ENV PYTHONUNBUFFERED=1
 CMD ["/bin/sh"]
 

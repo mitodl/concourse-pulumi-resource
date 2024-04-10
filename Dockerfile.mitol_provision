@@ -1,4 +1,4 @@
-FROM mitodl/ol-infrastructure as infra
+FROM mitodl/ol-infrastructure@sha256:ca95c11572d95381378822c11f4f176aa5e87d35636b8c88f4e35ab8bd43cf3c as infra
 
 FROM pulumi/pulumi-python:3.112.0@sha256:2c50b84fcd4f49b646aeafcc1a62aa61c83063963aa436b6e877706b1c442f43
 ENV PYTHONUNBUFFERED=1

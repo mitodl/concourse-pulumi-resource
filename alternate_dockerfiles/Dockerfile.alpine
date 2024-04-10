@@ -1,4 +1,4 @@
-FROM python:3.12-alpine
+FROM python:3.12-alpine@sha256:ef097620baf1272e38264207003b0982285da3236a20ed829bf6bbf1e85fe3cb
 ENV PYTHONUNBUFFERED=1
 ENV PATH="${PATH}:/root/.pulumi/bin"
 WORKDIR /opt/resource
