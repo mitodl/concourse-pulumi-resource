@@ -10,7 +10,7 @@ python = "^3.10"
 pulumi = "^3.22.1"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.0.0"
+pre-commit = "^4.0.0"
 black = "^21.12b0"
 mypy = "^1.0"
 isort = "^5.10.1"
