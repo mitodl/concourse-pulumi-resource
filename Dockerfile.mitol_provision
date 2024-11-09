@@ -1,6 +1,6 @@
 FROM mitodl/ol-infrastructure as infra
 
-FROM pulumi/pulumi-python:3.137.0@sha256:3a0bc04d50b3ef68572bbdabf592861d1458063ecb2e9c6e4bf596b72d7fb8e9
+FROM pulumi/pulumi-python:3.138.0@sha256:a9b97249a55f2e4caa7559f1d9431d35d162e15cd784903ab233b8dca9441ddb
 ENV PYTHONUNBUFFERED=1
 # This is a temporary workaround due to
 # https://github.com/protocolbuffers/protobuf/issues/10064 (TMM 2022-06-16)
