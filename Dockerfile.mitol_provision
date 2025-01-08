@@ -8,7 +8,7 @@ COPY lib/* /opt/resource/lib/
 CMD ["/bin/sh"]
 
 ARG PULUMI_VERSION=latest
-RUN wget -o pulumi.sh https://get.pulumi.com/ && /bin/sh pulumi.sh --install-root /usr/local --version ${PULUMI_VERSION} --silent && rm pulumi.sh
+RUN curl -fsSL https://get.pulumi.com | /bin/sh --install-root /usr/local --version ${PULUMI_VERSION} --silent
 
 RUN  /usr/bin/curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
      && chmod +x ./kubectl  \
