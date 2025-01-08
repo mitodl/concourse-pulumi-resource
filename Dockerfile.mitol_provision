@@ -11,7 +11,7 @@ CMD ["/bin/sh"]
 RUN apt-get update && apt-get install --no-install-recommends -y curl unzip groff && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ARG PULUMI_VERSION=latest
-RUN curl -fsSL https://get.pulumi.com | /bin/sh --install-root /usr/local --version ${PULUMI_VERSION} --silent
+RUN curl https://get.pulumi.com -o pulumi.sh && /bin/sh pulumi.sh  --install-root /usr/local --version ${PULUMI_VERSION} --silent && rm pulumi.sh
 
 RUN  /usr/bin/curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
      && chmod +x ./kubectl  \
