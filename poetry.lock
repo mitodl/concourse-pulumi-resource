@@ -158,14 +158,14 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "filelock"
-version = "3.17.0"
+version = "3.18.0"
 description = "A platform independent file lock."
 category = "dev"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "filelock-3.17.0-py3-none-any.whl", hash = "sha256:533dc2f7ba78dc2f0f531fc6c4940addf7b70a481e269a5a3b93be94ffbe8338"},
-    {file = "filelock-3.17.0.tar.gz", hash = "sha256:ee4e77401ef576ebb38cd7f13b9b28893194acc20a8e68e18730ba9c0e54660e"},
+    {file = "filelock-3.18.0-py3-none-any.whl", hash = "sha256:c401f4f8377c4464e6db25fff06205fd89bdd83b65eb0488ed1b160f780e21de"},
+    {file = "filelock-3.18.0.tar.gz", hash = "sha256:adbc88eabb99d2fec8c9c1b229b171f18afa655400173ddc653d5d01501fb9f2"},
 ]
 
 [package.extras]
@@ -473,13 +473,13 @@ files = [
 
 [[package]]
 name = "pulumi"
-version = "3.154.0"
+version = "3.156.0"
 description = "Pulumi's Python SDK"
 category = "main"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "pulumi-3.154.0-py3-none-any.whl", hash = "sha256:f7a664202b193a2fcf13edfdb9f43c23b051784994b7a268b7168e51ba76e5bf"},
+    {file = "pulumi-3.156.0-py3-none-any.whl", hash = "sha256:cb2f0710160f06814995bc201430ddc8ed6ed9e6641d8b61837924193098a267"},
 ]
 
 [package.dependencies]
