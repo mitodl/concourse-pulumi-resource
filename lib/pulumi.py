@@ -2,7 +2,7 @@
 
 import sys
 from pathlib import Path
-from typing import Optional, Union
+from typing import Union
 
 from pulumi import automation
 
@@ -24,7 +24,7 @@ def read_stack(
     project_name: str,
     source_dir: Union[str, Path],
     env: dict,
-    output_key: Optional[str] = None,
+    output_key: str | None = None,
 ):
     """returns output value or values from a specified stack"""  # noqa: D403, D401
     import sys
@@ -92,7 +92,7 @@ def update_stack(  # noqa: PLR0913
     project_name: str,
     source_dir: Union[str, Path],
     stack_config: dict,
-    env: Optional[dict] = None,
+    env: dict | None = None,
     refresh_stack: bool = True,
     preview: bool = False,
 ) -> int:
@@ -133,7 +133,7 @@ def update_stack(  # noqa: PLR0913
 def destroy_stack(
     stack_name: str,
     project_name: str,
-    env: Optional[dict] = None,
+    env: dict | None = None,
     refresh_stack: bool = False,
 ) -> int:
     """destroys and removes a stack"""  # noqa: D403
@@ -166,7 +166,7 @@ def destroy_stack(
 
 
 def __env_to_workspace(
-    env: Optional[dict] = None,
+    env: dict | None = None,
 ) -> automation.LocalWorkspaceOptions:
     """converts env dict into workspace options"""  # noqa: D403, D401
     env = env or {}
