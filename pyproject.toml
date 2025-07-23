@@ -1,24 +1,25 @@
-[tool.poetry]
+[project]
 name = "concourse-pulumi-resource"
 version = "0.1.0"
 description = "A resource to enable execution of Pulumi projects in Concourse using the automation API and the Python bindings."
-authors = ["MIT Open Learning"]
+authors = [{ name = "MIT Open Learning" }]
+requires-python = "~=3.10"
 license = "BSD-3-Clause"
+dependencies = ["pulumi>=3.22.1,<4"]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-pulumi = "^3.22.1"
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^4.0.0"
-black = "^21.12b0"
-mypy = "^1.0"
-isort = "^6.0.0"
-ruff = "^0.12.0"
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.0,<5",
+    "mypy~=1.0",
+    "ruff~=0.12.0",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+package = false
 
 [tool.ruff]
 target-version = "py310"

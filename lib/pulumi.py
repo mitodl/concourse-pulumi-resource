@@ -95,6 +95,7 @@ def update_stack(  # noqa: PLR0913
     env: dict | None = None,
     refresh_stack: bool = True,
     preview: bool = False,
+    run_program: bool = True,
 ) -> int:
     """updates a stack and returns its output values"""  # noqa: D403, D401
     import sys
@@ -113,7 +114,7 @@ def update_stack(  # noqa: PLR0913
             stack.set_config(config_key, automation.ConfigValue(config_value))
         # refresh the stack
         if refresh_stack:
-            stack.refresh(on_output=logger.info)
+            stack.refresh(on_output=logger.info, run_program=run_program)
         if preview:
             # preview instead and output to stdout
             logger.info(f"stack '{stack_name}' preview below:")
@@ -121,7 +122,7 @@ def update_stack(  # noqa: PLR0913
             return 0
         else:
             # deploy the stack and output logs to stdout
-            up_result = stack.up(on_output=logger.info)
+            up_result = stack.up(on_output=logger.info, run_program=run_program)
             logger.info(f"stack '{stack_name}' successfully updated!")
             return up_result.summary.version
     except automation.ConcurrentUpdateError as exception:
@@ -135,6 +136,7 @@ def destroy_stack(
     project_name: str,
     env: dict | None = None,
     refresh_stack: bool = False,
+    run_program: bool = True,
 ) -> int:
     """destroys and removes a stack"""  # noqa: D403
     try:
@@ -148,9 +150,9 @@ def destroy_stack(
         )
         # refresh the stack
         if refresh_stack:
-            stack.refresh(on_output=logger.info)
+            stack.refresh(on_output=logger.info, run_program=run_program)
         # destroy the stack and output logs to stdout
-        destroy_result = stack.destroy(on_output=logger.info)
+        destroy_result = stack.destroy(on_output=logger.info, run_program=run_program)
         stack.workspace.remove_stack(stack_name)
         return destroy_result.summary.version
     except automation.StackNotFoundError as exception:
