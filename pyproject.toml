@@ -3,7 +3,7 @@ name = "concourse-pulumi-resource"
 version = "0.1.0"
 description = "A resource to enable execution of Pulumi projects in Concourse using the automation API and the Python bindings."
 authors = [{ name = "MIT Open Learning" }]
-requires-python = "~=3.10"
+requires-python = "~=3.12"
 license = "BSD-3-Clause"
 dependencies = ["pulumi>=3.22.1,<4"]
 
@@ -22,8 +22,10 @@ build-backend = "hatchling.build"
 package = false
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py312"
 line-length = 88
+
+[tool.ruff.lint]
 select = [
     "A",      # flake8-builtins
     # "ARG",  # flake8-unused-arguments
@@ -91,8 +93,8 @@ ignore = [
 typing-modules = ["colour.hints"]
 fixable = ["I", "D", "B", "E", "F", "UP", "C4", "Q", "RET", "PIE", "SIM","UP", "W", "RUF"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "pep257"
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 inline-quotes = "double"
