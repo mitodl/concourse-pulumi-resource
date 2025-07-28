@@ -33,7 +33,7 @@ repos:
     args: [--format, parsable, --strict, -d, relaxed]
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: 'v0.12.4'
+  rev: 'v0.12.5'
   hooks:
   - id: ruff-format
   - id: ruff
