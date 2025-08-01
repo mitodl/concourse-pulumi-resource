@@ -98,3 +98,6 @@ convention = "pep257"
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "double"
+
+[tool.mypy]
+python_version = 3.12

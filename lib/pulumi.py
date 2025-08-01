@@ -173,7 +173,7 @@ def __env_to_workspace(
     """converts env dict into workspace options"""  # noqa: D403, D401
     env = env or {}
     aws_shared_credentials_file = Path(sys.argv[1]).joinpath(
-        (env).get("AWS_SHARED_CREDENTIALS_FILE", None)
+        (env).get("AWS_SHARED_CREDENTIALS_FILE", "")
     )
     env["AWS_SHARED_CREDENTIALS_FILE"] = aws_shared_credentials_file
     return automation.LocalWorkspaceOptions(env_vars=env)
