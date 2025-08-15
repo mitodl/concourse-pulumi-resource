@@ -95,7 +95,7 @@ def update_stack(  # noqa: PLR0913
     env: dict | None = None,
     refresh_stack: bool = True,
     preview: bool = False,
-    run_program: bool = True,
+    run_program: bool = False,
 ) -> int:
     """updates a stack and returns its output values"""  # noqa: D403, D401
     import sys
@@ -136,7 +136,7 @@ def destroy_stack(
     project_name: str,
     env: dict | None = None,
     refresh_stack: bool = False,
-    run_program: bool = True,
+    run_program: bool = False,
 ) -> int:
     """destroys and removes a stack"""  # noqa: D403
     try:
