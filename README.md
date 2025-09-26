@@ -41,6 +41,7 @@ Creates, updates, or destroys a Pulumi stack.
 - **stack_config**: optional hash/dictionary that contains stack configuration key-value pairs
 - **env_pulumi**: optional hash/dictionary containing Pulumi environment variable key-value pairs
 - **env_os**: optional hash/dictionary containing os in-process environment variable key-value pairs
+- **env_vars_from_files**: optional hash/dict of vars and file paths to set in the environment.
 - **refresh_stack**: optional boolean to determine whether to refresh the Pulumi stack prior to action (default: `true`)
 
 ## Example
