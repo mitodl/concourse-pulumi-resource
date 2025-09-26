@@ -4,8 +4,18 @@ import json
 import os
 import sys
 from pathlib import Path
+from lib.io import read_value_from_file
 
 import lib.pulumi
+
+
+def _process_env_var_files(env_var_files: dict, working_dir: str) -> None:
+    for var_name, file_path in env_var_files.items():
+        os.environ[var_name] = read_value_from_file(file_path, working_dir=working_dir)
+
+
+def _get_working_dir_path() -> str:
+    return sys.argv[1]
 
 
 def check_cmd() -> None:
@@ -60,6 +70,10 @@ def out_cmd() -> None:
     version: int = 0
     if "env_os" in resource_config:
         os.environ.update(resource_config["env_os"])
+    if "env_vars_from_files" in resource_config:
+        _process_env_var_files(
+            resource_config["env_vars_from_files"], _get_working_dir_path()
+        )
 
     if resource_config["action"] == "create":
         version = lib.pulumi.create_stack(
