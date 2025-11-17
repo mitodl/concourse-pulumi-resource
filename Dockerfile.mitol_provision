@@ -15,7 +15,9 @@ RUN curl https://get.pulumi.com -o pulumi.sh && /bin/sh pulumi.sh  --install-roo
 
 RUN  /usr/bin/curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
      && chmod +x ./kubectl  \
-     &&  mv ./kubectl /usr/local/bin/kubectl
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-	./aws/install
+     &&  mv ./kubectl /usr/local/bin/kubectl && \
+     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+     unzip awscliv2.zip && \
+     ./aws/install
+
+RUN pip freeze | sort | grep -i pulumi | grep -v 'pulumi==' | sed -E 's/pulumi(verse)?[-_](.*?)==(.*)/resource \2 \3/' | sed 's/_/-/' | xargs -n 3 pulumi plugin install --non-interactive
