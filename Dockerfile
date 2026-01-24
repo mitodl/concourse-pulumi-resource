@@ -1,4 +1,4 @@
-FROM pulumi/pulumi-python:3.216.0@sha256:6cd15eb5f1e66fbc66facf50b88cb299a75f98f9687d93b49e944359ac3b60a5
+FROM pulumi/pulumi-python:3.217.0@sha256:c023d9b258db01a816ec632faad99b97b8e89b4cf9ff519ed6648c6089183939
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /opt/resource
