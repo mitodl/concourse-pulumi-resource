@@ -11,6 +11,8 @@ CMD ["/bin/sh"]
 COPY bin/* /opt/resource/
 COPY lib/* /opt/resource/lib/
 
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
 RUN  /usr/bin/curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
      && chmod +x ./kubectl  \
      &&  mv ./kubectl /usr/local/bin/kubectl
