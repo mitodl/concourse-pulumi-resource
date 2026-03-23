@@ -1,4 +1,8 @@
+FROM ghcr.io/astral-sh/uv:latest AS uv
+
 FROM pulumi/pulumi-python:3.227.0@sha256:01891988810014bdda50c5007946b0160e2d6241782d8da0a6122dffde66e610
+
+COPY --from=uv /uv /usr/local/bin/uv
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /opt/resource
