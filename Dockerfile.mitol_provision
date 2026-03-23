@@ -1,10 +1,13 @@
 FROM mitodl/ol-infrastructure as infra
 
+FROM ghcr.io/astral-sh/uv:latest AS uv
+
 FROM python:3.14-slim
 ENV PYTHONUNBUFFERED=1
 COPY bin/* /opt/resource/
 COPY lib/* /opt/resource/lib/
 COPY --from=infra /usr/local/ /usr/local/
+COPY --from=uv /uv /usr/local/bin/uv
 
 CMD ["/bin/sh"]
 
