@@ -12,6 +12,7 @@ COPY --from=uv /uv /usr/local/bin/uv
 # Pre-sync Python dependencies from ol-infrastructure so uv sync is a no-op at runtime
 COPY --from=infra /opt/ol-infrastructure/pyproject.toml /opt/ol-infrastructure/
 COPY --from=infra /opt/ol-infrastructure/uv.lock /opt/ol-infrastructure/
+COPY --from=infra /opt/ol-infrastructure/sdks /opt/ol-infrastructure/sdks
 RUN uv sync --frozen --project /opt/ol-infrastructure
 
 COPY bin/* /opt/resource/
