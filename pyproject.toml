@@ -12,6 +12,7 @@ dev = [
     "pre-commit>=4.0.0,<5",
     "mypy~=1.0",
     "ruff~=0.15.0",
+    "types-pyyaml>=6.0.12.20250915",
 ]
 
 [build-system]
