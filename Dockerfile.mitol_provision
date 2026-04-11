@@ -1,6 +1,6 @@
-FROM mitodl/ol-infrastructure as infra
+FROM mitodl/ol-infrastructure@sha256:24943600a749e08f116f90e2fa90064207030386b9d8a8dc13feb65f09ff0b37 as infra
 
-FROM python:3.14-slim
+FROM python:3.14-slim@sha256:bc389f7dfcb21413e72a28f491985326994795e34d2b86c8ae2f417b4e7818aa
 ENV PYTHONUNBUFFERED=1
 COPY bin/* /opt/resource/
 COPY lib/* /opt/resource/lib/
