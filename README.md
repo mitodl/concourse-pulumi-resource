@@ -1,3 +1,6 @@
+> [!WARNING]
+> **This repository is archived.** Development has moved to [mitodl/ol-concourse](https://github.com/mitodl/ol-concourse/tree/main/resources/pulumi). Please use that repository instead.
+
 # Concourse Pulumi Resource
 
 A [concourse-ci](https://concourse-ci.org) resource for provisioning infrastructure via [Pulumi](https://www.pulumi.com).
